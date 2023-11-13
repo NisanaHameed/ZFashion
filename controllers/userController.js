@@ -178,7 +178,7 @@ const loadShop = async (req, res) => {
                 { product_name: { $regex: search, $options: 'i' } },
             ]
         }).sort(sortProduct);
-        console.log(product)
+        // console.log(product)
         // const product = await Product.find({ $or: [{ product_name: { $regex: search, $options: 'i' } }, {Category:{ $in: findCategory }}, { Brand:{$in: findBrand }}] });
 
         // console.log(brands)
@@ -224,7 +224,7 @@ const loadProductdDetail = async (req, res) => {
         let catgry = product.Category;
         let similar = await Product.find({ Category: catgry, _id: { $ne: id } });
         const rate = await Rate.findOne({ ProductId: id }).populate('User.UserId');
-        console.log('Rate' + rate);
+        // console.log('Rate' + rate);
         res.render('productdetail', { product, similar, rate, username });
 
     } catch (error) {
@@ -249,8 +249,8 @@ const editUserProfile = async (req, res) => {
 
         console.log('hii otp')
         let userid = req.session.userId;
-        console.log(req.body.email)
-        console.log(userid)
+        // console.log(req.body.email)
+        // console.log(userid)
         let email = req.body.email;
         const finduser = await User.findById(userid);
         if(finduser.email==email){
