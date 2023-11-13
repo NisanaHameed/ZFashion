@@ -1,0 +1,218 @@
+<%- include('../layouts/user/header.ejs') -%>
+    <%- include('../layouts/user/sidebar.ejs') -%>
+        <div class="container" style="min-height:80vh" id="useraddress">
+            <div class="mt-4">
+                <a class="btn text-white" style="background-color: rgb(201, 20, 89);" href="/addAddress">+ ADD NEW
+                    ADDRESS</a>
+            </div>
+            <% if(address) { %>
+                <div class="mt-4">
+                    <h5><b>Addresses :</b></h5>
+                </div>
+
+                <div class="row">
+                    <% for(let i=0;i<address.Address.length;i++) { %>
+                        <div class="col-lg-4 my-4 mx-3 p-4" style="border: 0.5px solid black; border-radius: 0.5rem;">
+                            <ul style="list-style-type: none;">
+                                <li><b>
+                                        <%= address.Address[i].Name %>
+                                    </b></li>
+                                <li class="mt-2">
+                                    <%= address.Address[i].HouseName %>
+                                </li>
+                                <li class="mt-1">
+                                    <%= address.Address[i].City %>
+                                </li>
+                                <li class="mt-1">
+                                    <%= address.Address[i].Locality %>
+                                </li>
+                                <li class="mt-1">
+                                    <%= address.Address[i].State %>
+                                </li>
+                                <li class="mt-1">
+                                    <%= address.Address[i].Pincode %>
+                                </li>
+                                <li class="mt-1 mb-2">
+                                    <%= address.Address[i].Mobile %>
+                                </li>
+                            </ul>
+                            <a class="mr-3" onclick="editAddress('<%= JSON.stringify(address.Address[i]) %>')"><img
+                                    src="/user/img/edit_1160515.png" style="width: 1.5rem;"></a>
+
+                            <div id="myModal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close" onclick="closeModal()">&times;</span>
+                                    <form id="edituseraddress" method="post">
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input type="text" class="form-control mt-2" id="name" name="name"
+                                                value="<%= address.Address[i].Name %>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Housename</label>
+                                            <input type="text" class="form-control mt-2" id="housename" name="housename"
+                                                value="<%= address.Address[i].HouseName %>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Locality</label>
+                                            <input type="text" class="form-control mt-2" id="locality" name="locality"
+                                                value="<%= address.Address[i].Locality %>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>City</label>
+                                            <input type="text" class="form-control mt-2" id="city" name="city"
+                                                value="<%= address.Address[i].City %>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>State</label>
+                                            <input type="text" class="form-control mt-2" id="state" name="state"
+                                                value="<%= address.Address[i].State %>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Pincode</label>
+                                            <input type="number" class="form-control mt-2" id="pincode" name="pincode"
+                                                value="<%= address.Address[i].Pincode %>" pattern="[0-9]{6}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Mobile</label>
+                                            <input type="text" class="form-control mt-2" id="mobile" name="mobile"
+                                                value="<%= address.Address[i].Mobile %>" pattern="[0-9]{10}">
+                                        </div>
+                                        <p class="text-danger" id="error"></p>
+                                        <input type="hidden" id="addressid" name="address" value="">
+                                        <div class="d-flex justify-content-center">
+                                            <button type="submit" class="btn btn-secondary">Update</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <a onclick="confirmDelete('<%= address.Address[i]._id %>')"><img
+                                    src="/user/img/remove_7695661.png" style="width: 1.5rem;"></a>
+                        </div>
+                        <% } %>
+                </div>
+                <% } %>
+        </div>
+        </section>
+        <%- include('../layouts/user/footer.ejs') -%>
+            <script>
+                function editAddress(address) {
+                    console.log(address)
+                    console.log(typeof (address))
+                    let data = JSON.parse(address);
+                    console.log(data)
+                    let form = document.getElementById('myModal');
+                    document.getElementById('name').value = data.Name;
+                    document.getElementById('housename').value = data.HouseName;
+                    document.getElementById('locality').value = data.Locality;
+                    document.getElementById('city').value = data.City;
+                    document.getElementById('state').value = data.State;
+                    document.getElementById('pincode').value = data.Pincode;
+                    document.getElementById('mobile').value = data.Mobile;
+                    document.getElementById('addressid').value = data._id;
+                    console.log(data._id);
+                    form.style.display = 'block';
+                }
+                function closeModal() {
+                    const modal = document.getElementById('myModal');
+                    modal.style.display = 'none';
+                }
+
+                document.getElementById('edituseraddress').addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    
+                    let name = document.getElementById('name').value.trim();
+                    let mobile = document.getElementById('mobile').value;
+                    let state = document.getElementById('state').value.trim();
+                    let housename = document.getElementById('housename').value.trim();
+                    let city = document.getElementById('city').value.trim();
+                    let locality = document.getElementById('locality').value.trim();
+                    let pincode = document.getElementById('pincode').value;
+                    const numberPattern = /\d/;
+                    document.getElementById('error').innerText = "";
+                    let valid = true;
+                    if (name == "" || numberPattern.test(name)) {
+                        document.getElementById('error').innerText = "Enter a valid name";
+                        valid = false;
+                    }
+                    else if (mobile.length !== 10) {
+                        document.getElementById('error').innerText = "Enter a valid mobile number";
+                        valid = false;
+                    }
+                    else if (state == "" || numberPattern.test(state)) {
+                        document.getElementById('error').innerText = "Enter valid state";
+                        valid = false;
+                    }
+                    else if (housename == "" || numberPattern.test(housename)) {
+                        document.getElementById('error').innerText = "Enter valid housename";
+                        valid = false;
+                    }
+                    else if (city == "" || numberPattern.test(city)) {
+                        document.getElementById('error').innerText = "Enter valid city";
+                        valid = false;
+                    }
+                    else if (locality == "" || numberPattern.test(locality)) {
+                        document.getElementById('error').innerText = "Enter valid locality";
+                        valid = false;
+                    }
+                    else if (pincode.length !== 6) {
+                        document.getElementById('error').innerText = "Enter a valid pincode";
+                        valid = false;
+                    }
+                    if (valid == true) {
+                        submiteditedAddress();
+                    //     const id = document.getElementById('addressid').value;
+                    // this.action = `/editAddress/${id}`;
+
+                    }                   
+                });
+
+                function submiteditedAddress(){
+                    const id = document.getElementById('addressid').value;
+                    let form = document.getElementById('edituseraddress')
+                    let formdata = $(form).serialize(); 
+                    console.log(formdata);
+                    $.ajax({
+                        method:'POST',
+                        url:`/editAddress/${id}`,
+                        data:formdata,
+                        success:function(response){
+                            if(response.success){
+                                $('#useraddress').load('/address #useraddress');
+                            }
+                        },
+                        error:function(err){
+                            console.log(err);
+                        }
+                    })
+
+                }
+
+                function confirmDelete(id) {
+                    let confirmation = confirm("Are you sure you want to delete?");
+                    if (confirmation) {
+                        deleteuserAddress(id);
+                    }
+                }
+
+                function deleteuserAddress(addressid) {
+                    let data = { addressid: addressid };
+                    $.ajax({
+                        method: 'DELETE',
+                        url: '/deleteAddress',
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        success: function (response) {
+                            if (response.deleted) {
+                                $('#useraddress').load('/address #useraddress');
+
+                            } else {
+                                swal("Something went wrong!");
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    })
+                }
+            </script>

@@ -1,0 +1,45 @@
+body{
+    background-image: url('/user/img/dressbg.jpg');
+    background-repeat: no-repeat;
+    background-size: cover; 
+    
+  }
+  .frmstyl{
+      border-radius: 5px;
+      background-color: rgba(255, 255, 255,0.6);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+      width: 25rem;
+    }
+    .frmstyl label{
+      font-size: 15px;
+      letter-spacing: 0.3px;
+      font-family: sans-serif;
+     
+      /* color: white; */
+    }
+    .outer{
+      min-height: 80vh;
+     
+    }
+  .signup{
+    color:white;
+    text-align: center;
+    text-decoration: none;
+    background-color: rgb(55, 55, 55);
+  }
+  .outer p{
+      font-size: 0.8rem;
+      /* color: white; */
+  }
+  h6{
+    text-align: center;
+  }
+  /* h4{
+    color: white;
+  } */
+
+  a{
+    text-decoration: none;
+  }
+
+ 

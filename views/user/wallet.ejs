@@ -1,0 +1,32 @@
+<%- include('../layouts/user/header.ejs') -%>
+<%- include('../layouts/user/sidebar.ejs') -%>
+
+<div class="container" style="min-height: 90vh;">
+    <% if(wallet){ %> 
+    <div class="mx-2 my-5">
+        <h5 class="mb-3">BALANCE</h5>
+        <h3 class="text-success"><b>Rs <%= wallet.Balance %></b></h3>
+    </div>
+    <div class="ml-2">
+        <h6><b>TRANSACTION DETAILS</b></h6>
+        <ul class="wallethistory pt-4" style="width: 25rem;font-size: 1.08rem;">
+            <% for(let i=0;i<wallet.Transaction.length;i++){ %>
+                <li class="mb-2 p-2" style="background-color: rgb(251, 246, 239);">
+                    <% if(wallet.Transaction[i].Amount<0) { %> 
+                        <span class="text-danger"><%= wallet.Transaction[i].Amount %></span>
+                        <% }else { %> 
+                            <span class="text-success">+<%= wallet.Transaction[i].Amount %></span>
+                            <% } %>
+                   
+                    <span><%= wallet.Transaction[i].Date.toLocaleDateString('en-US', { year:
+                    'numeric', month: 'short', day: '2-digit'
+                    }).replace(/\//g, '-') %></span>
+                </li>
+           <% } %>           
+        </ul>
+    </div>
+    <% } %>
+</div>
+
+</section>
+<%- include('../layouts/user/footer.ejs') -%>

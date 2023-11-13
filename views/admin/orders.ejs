@@ -1,0 +1,98 @@
+<%- include('../layouts/admin/header.ejs') -%>
+
+<div class="container" >
+<div class="row mt-5">
+    <div class="col-12 grid-margin">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Order Status</h4>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  
+                  <th> User Name </th>
+                  <th> Order ID </th>
+                  <th> Amount </th>
+                  <th> Payment Mode </th>
+                  <th> Order Date </th>
+                  <th> Payment Status </th>
+                  <th> Action </th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for(let i=0;i<order.length;i++) { %> 
+                <tr>
+                  <td><%= order[i].UserId.name %></td>
+                  <td> <%= order[i]._id %> </td>
+                  <td> <%= order[i].totalAmount %> </td>
+                  <td> <%= order[i].paymentMethod %> </td>
+                  <td> <%= order[i].Date.toISOString().split('T')[0] %> </td>
+                  <td>
+                    <!-- <div class="badge badge-outline-success"><%= order[i].Status %></div> -->
+                    <div class="dropdown">
+                      <button type="button" <% if (order[i].Status === 'Cancelled') { %>
+                        class="btn btn-danger"
+                      <% } else if(order[i].Status=="Returned") { %>
+                        class="btn" style="background-color:grey"
+                      <% }else { %>
+                        class="btn btn-success"
+                         <% } %> data-toggle="dropdown">
+                        <%= order[i].Status %>
+                      </button>
+                      <% if(order[i].Status!="Cancelled") { %> 
+                      <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/admin/changeStatus?q=Placed&id=<%= order[i]._id %> " style="color:brown">Placed</a></li>
+                        <li><a class="dropdown-item" href="/admin/changeStatus?q=Shipped&id=<%= order[i]._id %> " style="color:brown">Shipped</a></li>
+                        <li><a class="dropdown-item" href="/admin/changeStatus?q=Delivered&id=<%= order[i]._id %>" style="color:brown">Delivered</a></li>
+                      </ul>
+                      <% } %>
+                    </div>
+                  </td>
+                  <td>
+                  <% if(order[i].Status=="Placed" || order[i].Status=="Shipped") { %> 
+                    
+                   <a class="btn btn-warning" href="javascript:void(0)" onclick="confirmDelete('<%= order[i]._id %>')">Cancel</a> 
+                  
+                  <% } %>
+                </td>
+                  <td>
+                    <a class="btn btn-outline-info" href="/admin/orderDetails/<%= order[i]._id %>">View Details</a>
+                  </td>
+                </tr>
+                <% } %>
+                
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 d-flex justify-content-center"">
+      <nav aria-label="...">
+        <ul class="pagination pagination-sm ">
+          <% for(let i=1;i<=pages;i++) { %> 
+            <% if( i==parseInt(pageNum) ) { %>
+          <li class="page-item active" aria-current="page" >
+            <a class="page-link"><%= i %></a>
+          </li>
+          <% } else { %>
+          <li class="page-item" ><a class="page-link" href="/admin/orders/?page=<%= i %>" ><%= i %></a></li>
+          <% } %>
+          <% } %>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<%- include('../layouts/admin/footer.ejs') -%>
+<script>
+  function confirmDelete(orderId) {
+    const confirmation = confirm('Are you sure you want to cancel this order?');
+    if (confirmation) {
+      window.location.href = `/admin/cancelOrder/${orderId}`;
+    }
+  }
+</script>

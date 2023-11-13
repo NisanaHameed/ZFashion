@@ -1,0 +1,213 @@
+<%- include('../layouts/user/header.ejs') -%>
+
+  <%- include('../layouts/user/sidebar.ejs') -%>
+
+    <!-- Main content -->
+
+    <div class="container mt-5" style="min-height:80vh">
+      <div class="row">
+        <div class="col-lg-6">
+          <form action="#" method="post" id="editForm">
+            <div class="mb-3">
+              <label for="exampleInputEmail1" class="form-label"><b>Name</b></label>
+              <input type="name" class="form-control py-4" name="name" id="name" aria-describedby="emailHelp"
+                value="<%= user.name %>">
+            </div>
+            <div class="mb-3">
+              <label for="exampleInputEmail1" class="form-label"><b>Email address</b></label>
+              <input type="email" class="form-control py-4" name="email" id="email" aria-describedby="emailHelp"
+                value="<%= user.email %>">
+
+            </div>
+            <div class="mb-3">
+              <label for="exampleInputPassword1" class="form-label"><b>Mobile No</b></label>
+              <input type="number" class="form-control py-4" name="mobile" id="mobile" value="<%= user.mobile %>">
+            </div>
+            <div class="mb-3">
+              <p class="text-danger" id="error"></p>
+            </div> 
+
+            <button type="submit" class="btn text-white mt-3"
+              style="background-color:  rgb(201, 20, 89);">SAVE DETAILS</button>
+          </form>
+
+          <div class="form-container my-3" id="otpform" style="display: none;" style=" border: 1px solid grey;">
+            <form action="/editVerifyOTP" method="post" style="width: 10rem;">
+              <div class="form-group">
+                <!-- <label for="exampleInputPassword1" class="form-label">Enter Your OTP</label> -->
+                <input type="text" class="form-control" id="exampleInputPassword1" name="otp" placeholder="Enter OTP">
+              </div>
+              <div>
+                <div class="timer mb-2" id="timer"><span id="time">05:00</span></div>
+                <button type="submit" class="btn btn-secondary">Verify</button>
+              </div>
+
+            </form>
+           
+          </div>
+
+
+          <button class="btn text-white mt-3" onclick="passwordForm()"
+            style="background-color:  rgb(201, 20, 89);">CHANGE PASSWORD</button>
+          <div id="myModal" class="modal">
+
+            <div class="modal-content">
+              <span class="close" onclick="closeModal()">&times;</span>
+              <form id="updateCategoryForm" method="post">
+                <div class="form-group">
+                  <label>Current Password</label>
+                  <input type="password" class="form-control my-2" id="currentpassword" name="currentpassword">
+                  <input type="checkbox" id="showPasswordCheckbox"> show password
+                </div>
+                <div class="form-group">
+                  <label>New Password</label>
+                  <input type="password" class="form-control mt-2" id="newpassword" name="newpassword">
+                </div>
+                <div class="form-group">
+                  <label>Confirm Password</label>
+                  <input type="password" class="form-control mt-2" id="confirmpassword" name="confirmpassword">
+                </div>              
+                <input type="hidden" id="categoryId" name="categoryId" value="">
+                <div class="d-flex justify-content-center">
+                  <button type="submit" class="btn btn-secondary">Update</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <%- include('../layouts/user/footer.ejs') -%>;
+      <script>
+
+document.getElementById('editForm').addEventListener('submit',(e)=>{
+  e.preventDefault(); 
+let name = document.getElementById('name').value.trim();
+let email = document.getElementById('email').value.trim();
+let mobile = document.getElementById('mobile').value;
+let error = document.getElementById('error');
+error.innerText = "";
+const numberPattern = /\d/;
+let valid = true;
+
+if(name == "" || numberPattern.test(name)){
+  error.innerText = "Enter a valid name!";
+  valid = false;
+}else if(email == ""){
+  error.innerText = "Enter a valid email!"
+  valid = false;
+}else if(mobile<0 || mobile.length!==10){
+  error.innerText = "Enter a valid mobile number!";
+  valid = false;
+}
+if(valid==true){
+  var formData = new FormData(document.getElementById('editForm'));
+          let data = {}
+          formData.forEach(function (value, key) {
+            data[key] = value;
+          });
+          $.ajax({
+            method: 'POST',
+            url: '/editProfile',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success: function (response) {
+              if(response.edited){
+                swal("Profile updated!")
+              }else if(response.userExist){
+                swal("Email already exist!");
+              }else if (response.success) {
+                showotpform();
+              }
+            },
+            error: function (err) {
+              console.log(err);
+            }
+          })
+}              
+})
+        
+
+        function showotpform() {
+          let form = document.getElementById('otpform');
+          form.style.display = "block";
+        }
+
+        function passwordForm() {
+          let form = document.getElementById('myModal');
+          form.style.display = 'block';
+        }
+
+        function closeModal() {
+          const modal = document.getElementById('myModal');
+          modal.style.display = 'none';
+        }
+
+        let cpassword = document.getElementById('currentpassword');
+        let check = document.getElementById('showPasswordCheckbox');
+        check.addEventListener('change', function () {
+          cpassword.type = this.checked ? "text" : "password";
+        });
+        document.getElementById('updateCategoryForm').addEventListener('submit', function (event) {
+          event.preventDefault();
+
+          const currentpassword = document.getElementById('currentpassword').value;
+          const newpassword = document.getElementById('newpassword').value;
+          const confirmpassword = document.getElementById('confirmpassword').value;
+          const errorElement = document.getElementById('error');
+
+          if (newpassword !== confirmpassword) {
+            errorElement.innerText = "Password doesn't match!!";
+          } else {
+            changePassword(currentpassword, newpassword);
+          }
+        });
+
+        function changePassword(currentpassword, newpassword) {
+          const data = {
+            currentpassword: currentpassword,
+            newpassword: newpassword
+          };
+
+          $.ajax({
+            method: 'POST',
+            url: '/changeUserPassword',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success: function (response) {
+              if (response.password === true) {
+                swal("Password updated successfully");
+              } else {
+                swal("Try again!!");
+              }
+            },
+            error: function (err) {
+              console.error(err);
+            }
+          });
+        }
+
+        let timerInterval = setInterval(function() {
+      let timeElement = document.getElementById('time');
+      let time = timeElement.textContent.split(':');
+      let minutes = parseInt(time[0], 10);
+      let seconds = parseInt(time[1], 10);
+
+      if (seconds > 0) {
+        seconds--;
+        if (seconds < 10) {
+          seconds = '0' + seconds;
+        }
+      } else if (minutes > 0) {
+        minutes--;
+        seconds = 59;
+      } else {
+        clearInterval(timerInterval);
+        // Handle timeout here
+      }
+
+      timeElement.textContent = `${minutes}:${seconds}`;
+    }, 1000);
+      </script>

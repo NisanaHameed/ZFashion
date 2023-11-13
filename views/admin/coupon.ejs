@@ -1,0 +1,91 @@
+<%- include('../layouts/admin/header.ejs') -%>
+
+<div class="container mt-5"  id="reloadarea">
+  <div class="row justify-content-end">
+    <a href="/admin/loadAddcoupon" class="btn btn-outline-primary mx-5">Add Coupon</a>
+  </div>
+    <div class="row ">
+        <div class="col-12 grid-margin">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Coupons</h4>
+              <div class="table-responsive">
+                <% if(coupon) { %> 
+                <table class="table">
+                  <thead>
+                    <tr>
+                      
+                      <th> Coupon Name </th>
+                      <th> Coupon Code </th>
+                      <th> Discount Amount </th>
+                      <th> Activation Date </th>
+                      <th> Expiry Date </th>
+                      <th> Criteria Amount </th>
+                      <th> User limit </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                   
+                  <% for(let i=0;i<coupon.length;i++) { %> 
+                    <tr <% if(coupon[i].isBlock) { %> class="text-danger" <% } %>>
+                      <td> <%= coupon[i].Name %> </td>
+                      <td> <%= coupon[i].couponCode %> </td>
+                      <td> <%= coupon[i].discountAmount %> </td>
+                      <td> <%= coupon[i].activationDate.toLocaleDateString('en-US', { year:
+                        'numeric', month: 'short', day: '2-digit'
+                        }).replace(/\//g,'-') %> </td>
+                      <td> <%= coupon[i].expiryDate.toLocaleDateString('en-US', { year:
+                        'numeric', month: 'short', day: '2-digit'
+                        }).replace(/\//g,'-') %> </td>
+                      <td> <%= coupon[i].criteriaAmount %> </td>
+                      <td> <%= coupon[i].usersLimit %> </td>
+                      <td>
+                        <a href="/admin/getEditCoupon/<%= coupon[i]._id %>"><img src="/user/img/edit_1160515.png" style="width: 1.6rem;height: 1.6rem;"></a>  
+                      </td>
+                      <td>
+                        <a href="/admin/blockCoupon/<%= coupon[i]._id %>"><img src="/user/img/block.png" style="width: 1.6rem;height: 1.6rem;"></a>
+                      </td>
+                      <td>                     
+                        <a href="javascript:void(0)" onclick="confirmDelete('<%= coupon[i]._id %>')"><img src="/user/img/remove_7695661.png" style="width: 1.6rem;height: 1.6rem;"></a>           
+                    </td>                    
+                    </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+<%- include('../layouts/admin/footer.ejs') -%>
+
+<script>
+  function confirmDelete(id){
+    let confirmation = confirm("Are you sure you want to delete?");
+    if(confirmation){
+      // window.location.href = `/admin/deleteCoupon/${id}`;
+      deleteCoupon(id)
+    }
+  }
+  function deleteCoupon(id){
+    // let data = {id:id};
+    $.ajax({
+      method:'DELETE',
+      url:`/admin/deleteCoupon/${id}`,
+      
+      contentType:'application/json',
+      success:function(response){
+        if(response.success){
+          $('#reloadarea').load('/admin/coupon #reloadarea');
+          swal("Coupon deleted");  
+        }
+      },
+      error:function(err){
+        console.log(err);
+      }
+    })
+  }
+</script>

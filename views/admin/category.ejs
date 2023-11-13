@@ -1,0 +1,151 @@
+<%- include('../layouts/admin/header.ejs') -%>
+
+<div class="container" id="reloadarea">
+    <div class="row justify-content-end mt-5">
+        <div class="dropdown">
+            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown">
+              Add Category
+            </button>
+            <div class="dropdown-menu p-4 py-4">
+              <form action="/admin/add-category" method="post" style="width: 15rem;">
+                <div class="form-group">
+                  <label for="categoryName">Category Name</label>
+                  <input type="text" class="form-control mt-2" id="categoryName" name="category" placeholder="Enter category name">
+                </div>
+                <div class="d-flex justify-content-center">
+                  <button type="submit" class="btn btn-primary">ADD</button>
+                </div>
+              </form>
+            </div>
+          </div>
+    </div>
+    <div class="row mt-5" id="maindiv">
+        <div class="col-12 grid-margin">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Category</h4>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>
+                        
+                      </th>
+                      <th> Category name </th>
+                      <th> Action </th>
+                      
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if(category.length>0) { %> 
+                        <% for(let i=0;i<category.length;i++) { %>  
+                    <tr>
+                      <td>
+                       <%= i+1 %> </td>
+                      <td> <%= category[i].name %> </td>
+                      <td> 
+
+                        <a onclick="showUpdateCategoryForm('<%= category[i]._id %>','<%= category[i].name %>')"><img src="/user/img/pencil_7904963.png" style="width: 1.5rem; height: 1.5rem;"></a> 
+
+                        <div id="myModal" class="modal">
+                        
+                          <div class="modal-content">
+                              <span class="close" onclick="closeModal()">&times;</span>
+                              <form id="updateCategoryForm" method="post">
+                                  <div class="form-group">
+                                      <label for="updatedCategoryName">Update Category Name</label>
+                                      <input type="text" class="form-control mt-2" id="updatedCategoryName" name="category" value="<%= category[i].name %>">
+                                  </div>
+                                  <input type="hidden" id="categoryId" name="categoryId" value="">
+                                  <p class="text-danger" id="error"></p>
+                                  <div class="d-flex justify-content-center">
+                                      <button type="submit" class="btn btn-primary">Update</button>
+                                  </div>
+                              </form>
+                          </div>
+                      </div>
+
+                        <a href="javascript:void(0)" onclick="confirmDelete('<%= category[i]._id %>')" class="ml-3"><img src="/user/img/delete_6861362.png" style="width: 1.5rem; height: 1.5rem;"></a>    
+                    </td>
+                      
+                    </tr>
+                    <% } %>
+                    <% } else { %> 
+                        <tr>
+                            <td>Category not found</td>
+                        </tr>
+                        <% } %>
+                   
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('../layouts/admin/footer.ejs') -%>
+
+    <script>
+      function showUpdateCategoryForm(categoryId,categoryName) {
+    const modal = document.getElementById('myModal');
+    const updatedCategoryNameInput = document.getElementById('updatedCategoryName');
+    const categoryIdInput = document.getElementById('categoryId');
+    console.log(categoryId)
+    console.log(categoryName)
+    
+    updatedCategoryNameInput.value = categoryName;
+
+   
+    categoryIdInput.value = categoryId;
+
+    modal.style.display = 'block';
+}
+function closeModal() {
+  const modal = document.getElementById('myModal');
+  modal.style.display = 'none';
+}
+
+document.getElementById('updateCategoryForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+ 
+  let name = document.getElementById('updatedCategoryName').value.trim();
+  const numberPattern = /\d/;
+  document.getElementById('error').innerText = "";
+  let valid = true;
+  if(numberPattern.test(name) || name == ""){
+    document.getElementById('error').innerText = "Enter a valid category name";
+    valid = false;
+  }
+  if(valid == true){
+    editCategory();
+    this.action = `/admin/update-category/${categoryId}`;
+  }
+});
+function editCategory(){
+  const categoryId = document.getElementById('categoryId').value;
+  let data = document.getElementById('updatedCategoryName').value;
+  $.ajax({
+    method:'POST',
+    url:`/admin/update-category/${categoryId}`,
+    data:{data},
+    success:function(response){
+      if(response.success){
+        $('#reloadarea').load('/admin/category #reloadarea');
+        swal("Category updated");
+      }
+    }
+  })
+}
+
+
+  function confirmDelete(categoryId) {
+    const confirmation = confirm('Deleting this category will delete all the products in this category.Are you sure you want to continue?');
+    if (confirmation) {
+      window.location.href = `/admin/delete-category/${categoryId}`;
+    }
+  }
+ 
+
+  </script>

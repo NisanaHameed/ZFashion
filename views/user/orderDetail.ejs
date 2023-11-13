@@ -1,0 +1,401 @@
+<%- include('../layouts/user/header.ejs') -%>
+  <%- include('../layouts/user/sidebar.ejs') -%>
+    <div class="container" id="orderpage" style="min-height: 80vh;">
+      <div>
+        <% if(order.Status!="Cancelled" ) { %>
+          <div class="card my-3 mr-3 text-center align-items-center"
+            style="max-width: 100%; background-color:rgb(109, 232, 109);">
+            <% }else { %>
+              <div class="card my-3 align-items-center" style="max-width: 100%; background-color:rgb(141, 141, 141);">
+                <% } %>
+                  <div class="card-body">
+                    <h5 class="card-title"><b>
+                        <%= order.Status %>
+                      </b></h5>
+                    <p class="card-text"><b>Total Amount : <%= order.totalAmount %></b></p>
+                  </div>
+              </div>
+              <% if(order.Status=="Placed" || order.Status=="Shipped" ) { %>
+                <div class="text-center">
+                  <button class="btn px-3 py-2" style="border:1px solid rgb(201, 20, 89); color: rgb(201, 20, 89);"
+                    onclick="confirmDelete('<%= order._id %>')"><b>Cancel Order</b></button>
+                </div>
+                <% } %>
+                  <% if(order.Status=="Delivered" ) { %>
+                    <div class="text-center">
+                      <a href="/returnProduct/<%= order._id %>" class="btn px-3 py-2"
+                        style="border:1px solid rgb(201, 20, 89); color: rgb(201, 20, 89);"><b>Return</b></a>
+                    </div>
+                    <% } %>
+
+                      <% if(order.Status!="Cancelled" ) { %>
+                        <div class="card text-bg-success my-3" style="max-width: 30rem;">
+                          <div class="card-body">
+                            <h6 class="mb-4"><b>Delivery Address :</b></h6>
+                            <ul style="list-style-type: none;">
+                              <li><b>Name :</b>
+                                <%= order.deliveryDetails.Name %>
+                              </li>
+                              <li class="mt-2"><b>House Name: </b>
+                                <%= order.deliveryDetails.HouseName %>
+                              </li>
+                              <li class="mt-1"><b>Locality :</b>
+                                <%= order.deliveryDetails.Locality %>
+                              </li>
+                              <li class="mt-1"><b>City :</b>
+                                <%= order.deliveryDetails.City %>
+                              </li>
+                              <li class="mt-1"><b>State :</b>
+                                <%= order.deliveryDetails.State %>
+                              </li>
+                              <li class="mt-1"><b>Pincode :</b>
+                                <%= order.deliveryDetails.Pincode %>
+                              </li>
+                              <li class="mt-1"><b>Mobile No :</b>
+                                <%= order.deliveryDetails.Mobile %>
+                              </li>
+                            </ul>
+                          </div>
+                          <h6 class="m-3 p-3" style="background-color: rgb(210, 210, 210);"><img
+                              src="/user/img/cash2.png" style="width: 2rem;padding-right: 11px;"><b>
+                              <%= order.paymentMethod %>
+                            </b></h6>
+                          <% if(order.Status=="Returned" ) { %>
+                            <h6 class="mx-3 p-3" style="background-color: rgb(232, 232, 232);">
+                              <b>
+                                Cash credited to your wallet.
+                              </b>
+                            </h6>
+                            <% } %>
+                        </div>
+                        <% } %>
+          </div>
+
+          <div class="row my-4">
+            <% for(let i=0;i<order.Products.length;i++) { %>
+              <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                  <div class="col-4 ">
+                    <a href="/productDetail/<%= order.Products[i].ProductId._id %>"><img
+                        src="/userImages/<%= order.Products[i].ProductId.Image.image1 %>"
+                        class="img-fluid rounded-start p-3" alt="..."></a>
+                  </div>
+                  <div class="col-8">
+                    <div class="card-body">
+                      <h5 class="card-title">
+                        <%= order.Products[i].ProductId.product_name %>
+                      </h5>
+                      <p class="card-text"><b>Price : </b>
+                        <%= order.Products[i].Price %></small>
+                      </p>
+                      <p class="card-text"><b>Quantity : </b>
+                        <%= order.Products[i].Quantity %>
+                      </p>
+                      <p class="card-text"><b>Delivery : </b>
+                        <%= order.deliveryDate.toISOString().split('T')[0] %>
+                      </p>
+                      <p class="card-text"><b>Ordered On : </b>
+                        <%= order.Date.toISOString().split('T')[0] %>
+                      </p>
+                      <% if(order.Status=="Delivered" || order.Status=="Returned" ) { %>
+
+                        <form>
+                          <div class="rating">
+                            <input type="radio" id="star5_<%= order.Products[i]._id %>" name="rating" value="5">
+                            <label for="star5_<%= order.Products[i]._id %>"></label>
+                            <input type="radio" id="star4_<%= order.Products[i]._id %>" name="rating" value="4">
+                            <label for="star4_<%= order.Products[i]._id %>"></label>
+                            <input type="radio" id="star3_<%= order.Products[i]._id %>" name="rating" value="3">
+                            <label for="star3_<%= order.Products[i]._id %>"></label>
+                            <input type="radio" id="star2_<%= order.Products[i]._id %>" name="rating" value="2">
+                            <label for="star2_<%= order.Products[i]._id %>"></label>
+                            <input type="radio" id="star1_<%= order.Products[i]._id %>" name="rating" value="1">
+                            <label for="star1_<%= order.Products[i]._id %>"></label>
+                            <input type="hidden" id="rateproductid_<%= order.Products[i]._id %>"
+                              value="<%= order.Products[i].ProductId._id %>">
+                          </div>
+                        </form>
+                        <a style="color: rgb(224, 15, 116);"
+                          onclick="reviewForm('<%= order.Products[i]._id %>')"><b>Tell Us More</b></a>
+                        <div id="myModal_<%= order.Products[i]._id %>" class="modal">
+                          <div class="modal-content">
+                            <span class="close" onclick="closeModal('<%= order.Products[i]._id %>')">&times;</span>
+                            <form id="reviewform_<%= order.Products[i].ProductId._id %>">
+                              <div class="mb-3">
+                                <label class="form-label">Write your comment</label>
+                                <textarea class="form-control" id="reviewinput_<%= order.Products[i].ProductId._id %>"
+                                  rows="3"></textarea>
+                                <!-- <textarea class="form-control" id="reviewinput" rows="3"></textarea> -->
+                              </div>
+                              <input type="hidden" id="productid_<%= order.Products[i]._id %>" name="categoryId"
+                                value="<%= order.Products[i].ProductId._id %>">
+                              <div class="d-flex justify-content-center">
+                                <button type="submit" class="btn btn-secondary">SEND</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+
+
+
+                        <!-- <form id="raingForm">
+                          <div class="rating">
+                            <input type="radio" id="star5" name="rating" value="5">
+                            <label for="star5"></label>
+                            <input type="radio" id="star4" name="rating" value="4">
+                            <label for="star4"></label>
+                            <input type="radio" id="star3" name="rating" value="3">
+                            <label for="star3"></label>
+                            <input type="radio" id="star2" name="rating" value="2">
+                            <label for="star2"></label>
+                            <input type="radio" id="star1" name="rating" value="1">
+                            <label for="star1"></label>
+                            <input type="hidden" id="rateproductid" value="<%= order.Products[i].ProductId._id %>">
+                          </div>
+                        </form>
+                        <a style="color: rgb(224, 15, 116);"
+                          onclick="reviewForm('<%= order.Products[i]._id %>')"><b>Tell Us More</b></a>
+                        <div id="myModal" class="modal">
+                          <div class="modal-content">
+                            <span class="close" onclick="closeModal()">&times;</span>
+                            <form id="reviewform">
+                              <div class="mb-3">
+                                <label class="form-label">Write your comment</label>
+                                <textarea class="form-control" id="reviewinput" rows="3"></textarea>
+                              </div>
+                              <input type="hidden" id="productid" name="categoryId" value="">
+                              <div class="d-flex justify-content-center">
+                                <button type="submit" class="btn btn-secondary" onclick="submitReview('<%= order.Products[i].ProductId._id %>')">SEND</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div> -->
+                        <% } %>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <% } %>
+          </div>
+      </div>
+
+      </section>
+      <%- include('../layouts/user/footer.ejs') -%>
+        <script>
+
+
+          function confirmDelete(orderId) {
+            const confirmation = confirm('Are you sure you want to cancel this order?');
+            if (confirmation) {
+              let id = orderId
+              cancellOrder(id);
+            }
+          }
+
+          function reviewForm(id) {
+            // Construct the ID for the modal dynamically
+            let modalId = 'myModal_' + id;
+
+            // Get the modal and hidden input based on the constructed ID
+            let form = document.getElementById(modalId);
+            let productIdInput = document.getElementById('productid_' + id);
+
+            // Set the value for the hidden input
+            productIdInput.value = id;
+
+            // Display the modal
+            form.style.display = 'block';
+          }
+
+          function closeModal(id) {
+            // Get the modal by its static ID
+            const modal = document.getElementById('myModal_' + id);
+            modal.style.display = 'none';
+          }
+
+
+          // function reviewForm(id) {
+          //   let form = document.getElementById('myModal');
+          //   document.getElementById('productid').value = id;
+          //   form.style.display = 'block';
+          // }
+
+          // function closeModal() {
+          //   const modal = document.getElementById('myModal');
+          //   modal.style.display = 'none';
+          // }
+
+
+
+          function cancellOrder(orderId) {
+            const data = { orderId: orderId }
+            console.log(data);
+
+            $.ajax({
+              method: 'POST',
+              url: '/cancellOrder',
+              data: JSON.stringify(data),
+              contentType: 'application/json',
+              success: function (response) {
+                if (response.cancelled) {
+                  swal('Your order has been cancelled successfully!!');
+                  // $('#orderpage').load('/order-Detail #orderpage');
+                }
+              },
+              error: function (err) {
+                console.log(err);
+              }
+            })
+          }
+
+          document.addEventListener("DOMContentLoaded", function () {
+            const ratingInputs = document.querySelectorAll('input[name="rating"]');
+
+            ratingInputs.forEach(input => {
+              input.addEventListener("click", function () {
+                const selectedRating = this.value;
+                console.log('selectedRating' + selectedRating)
+                const productid = this.closest('form').querySelector('[id^="rateproductid_"]').value;
+                submitRating(selectedRating, productid);
+              });
+            });
+
+            function submitRating(rating, id) {
+              console.log('rating' + rating);
+              console.log(id);
+              let rate = parseInt(rating);
+              console.log(typeof (rate));
+              let data = { rating: rate, productId: id };
+              $.ajax({
+                method: 'POST',
+                url: '/productRating',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                success: function (response) {
+                  // Handle success if needed
+                },
+                error: function (err) {
+                  console.log(err);
+                }
+              });
+            }
+          });
+
+          document.addEventListener("DOMContentLoaded", function () {
+            const reviewForms = document.querySelectorAll('[id^="reviewform_"]');
+
+            reviewForms.forEach(form => {
+              form.addEventListener("submit", function (event) {
+                event.preventDefault(); // Prevent the form from actually submitting
+
+                const productId = this.id.split('_')[1]; // Extract productID from form ID
+                console.log(productId)
+                const reviewInput = document.getElementById('reviewinput_' + productId).value;
+                $.ajax({
+                  method: 'POST',
+                  url: '/submitProductReview',
+                  data: {
+                    productId,
+                    reviewInput
+                  },
+                  success: function (response) {
+                    if (response.noproduct) {
+                      swal("Please login");
+                    } else if (response.reviewsubmitted) {
+                      swal("Review sent!");
+                    }
+                  },
+                  error: function (err) {
+                    if (err) {
+                      console.log(err);
+                    }
+                  }
+                });
+
+              });
+            });
+          });
+
+
+          // function submitReview(productId) {
+          //   console.log("heyyyyyyyyyyy")
+          //   // let review = document.getElementById('reviewinput').value;
+          //   const reviewInput = document.getElementById('reviewinput_' + productId).value;
+          //   console.log(reviewInput)
+          //   $.ajax({
+          //     method: 'POST',
+          //     url: '/submitProductReview',
+          //     data: {
+          //       productId,
+          //       reviewInput
+          //     },
+          //     success: function (response) {
+          //       if (response.reviewsubmitted) {
+          //         // setTimeout(()=>{
+          //         //   $('#orderpage').load('/order-Detail #orderpage');
+          //         // },2000)
+          //         swal('success');
+          //       }
+          //     },
+          //     error: function (err) {
+          //       if (err) {
+          //         console.log(err);
+          //       }
+          //     }
+          //   });
+          // }
+
+
+          // document.addEventListener("DOMContentLoaded", function () {
+          //   const ratingInputs = document.querySelectorAll('input[name="rating"]');
+          //   let productid = document.getElementById('rateproductid').value;
+          //   ratingInputs.forEach(input => {
+          //     input.addEventListener("click", function () {
+          //       const selectedRating = this.value;
+          //       submitRating(selectedRating, productid);
+          //     });
+          //   });
+
+          //   function submitRating(rating, id) {
+          //     console.log('rating' + rating)
+          //     console.log(id)
+          //     let rate = parseInt(rating)
+          //     console.log(typeof (rate));
+          //     let data = { rating: rate, productId: id };
+          //     $.ajax({
+          //       method: 'POST',
+          //       url: '/productRating',
+          //       data: JSON.stringify(data),
+          //       contentType: 'application/json',
+          //       success: function (response) {
+          //       },
+          //       error: function (err) {
+          //         console.log(err);
+          //       }
+          //     })
+          //   }
+          // });
+
+          // function submitReview(productId){
+          //   let review = document.getElementById('reviewinput').value;
+          //   $.ajax({
+          //     method:'POST',
+          //     url:'/submitProductReview',
+          //     data:{
+          //       productId,
+          //       review
+          //     },
+          //     success:function(response){
+          //       if(response.reviewsubmitted){
+          //         swal('success');
+          //       }
+          //     },
+          //     error:function(err){
+          //       if(err){
+          //         console.log(err);
+          //       }
+          //     }
+          //   })
+          // }
+        </script>

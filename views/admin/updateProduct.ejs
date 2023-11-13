@@ -1,0 +1,191 @@
+<%- include('../layouts/admin/header.ejs') -%>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title pb-4">Update Product</h4>
+                    <!-- <p class="card-description"> Basic form elements </p> -->
+                    <form class="forms-sample" method="post" id="editProductForm" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="exampleInputName1">Product Name</label>
+                            <input type="text" class="form-control" name="pname" id="pname" value="<%= products.product_name %>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail3">Color</label>
+                            <input type="text" class="form-control" name="color" id="color" value="<%= products.Color %>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword4">Price</label>
+                            <input type="number" class="form-control" name="price" id="price" value="<%= products.Price %>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword4">Brand</label>
+                            <input type="text" class="form-control" name="brand" id="brand" value="<%= products.Brand %>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="categoryDropdown">Category</label>
+                            <select class="form-control " id="categoryDropdown" name="category" required>
+                                <option value="<%= products.Category %>">Select a category</option>
+                                <% category.forEach(cat=> { %> 
+                                    <option ><%= cat.name %></option>
+                                <%  }); %>
+                                
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputPassword4">Stock</label>
+                            <input type="number" class="form-control" name="stock" id="stock" value="<%= products.Stock %>" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sizeCheckboxes">Size</label>
+                            <div id="sizeCheckboxes" class="d-flex flex-row">
+                                <div class="form-check mr-5">
+                                    <input class="form-check-input" type="checkbox" id="sizeXS" name="sizes" value="XS" <%= products.Size.includes('XS')? 'checked':'' %>>
+                                    <label class="form-check-label" for="sizeXS">XS</label>
+                                </div>
+                                <div class="form-check mr-5">
+                                    <input class="form-check-input" type="checkbox" id="sizeS" name="sizes" value="S" <%= products.Size.includes('XS')? 'checked':'' %>>
+                                    <label class="form-check-label" for="sizeS">S</label>
+                                </div>
+                                <div class="form-check mr-5">
+                                    <input class="form-check-input" type="checkbox" id="sizeM" name="sizes" value="M" <%= products.Size.includes('XS')? 'checked':'' %>>
+                                    <label class="form-check-label" for="sizeM">M</label>
+                                </div>
+                                <div class="form-check mr-5">
+                                    <input class="form-check-input" type="checkbox" id="sizeL" name="sizes" value="L" <%= products.Size.includes('XS')? 'checked':'' %>>
+                                    <label class="form-check-label" for="sizeL">L</label>
+                                </div>
+                                <div class="form-check mr-5">
+                                    <input class="form-check-input" type="checkbox" id="sizeXL" name="sizes" value="XL" <%= products.Size.includes('XS')? 'checked':'' %>>
+                                    <label class="form-check-label" for="sizeXL">XL</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <label>Upload Images</label>
+                        <div class="form-row">
+                            
+                            <div class="form-group col-md-3">
+                                <!-- <label for="imageUpload1">Image 1 Upload</label> -->
+                                <input type="file" class="form-control" id="imageUpload1" name="image1" accept="image/*">
+                                <!-- <img src="/userImages/<%= products.Image[0] %>" width="250rem">  -->
+                            </div>
+                        
+                            <div class="form-group col-md-3">
+                                <!-- <label for="imageUpload2">Image 2 Upload</label> -->
+                                <input type="file" class="form-control" id="imageUpload2" name="image2" accept="image/*">
+                                <!-- <img src="/userImages/<%= products.Image[1] %>" width="250rem"> -->
+                            </div>
+                        
+                            <div class="form-group col-md-3">
+                                <!-- <label for="imageUpload3">Image 3 Upload</label> -->
+                                <input type="file" class="form-control" id="imageUpload3" name="image3" accept="image/*">
+                                <!-- <img src="/userImages/<%= products.Image[2] %>" width="250rem"> -->
+                            </div>
+                        
+                            <div class="form-group col-md-3">
+                                <!-- <label for="imageUpload4">Image 4 Upload</label> -->
+                                <input type="file" class="form-control" id="imageUpload4" name="image4" accept="image/*">
+                                <!-- <img src="/userImages/<%= products.Image[3] %>" width="250rem"> -->
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="exampleTextarea1">Product details</label>
+                            <textarea class="form-control" id="pdetails" rows="4" name="pdetails"><%= products.Productdetails %></textarea>
+                        </div>
+                        <input type="hidden" class="form-control" id="productid" name="id" value="<%= products._id %>">
+                        <div class="form-group">
+                            <p class="text-danger" id="error"></p>
+                        </div>
+                        <button type="submit" class="btn btn-primary mr-2">UPDATE</button>
+                        <!-- <button class="btn btn-dark">Cancel</button> -->
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../layouts/admin/footer.ejs') -%>
+
+
+<script>
+    document.getElementById('editProductForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        let pname = document.getElementById('pname').value.trim();
+        let color = document.getElementById('color').value.trim();
+        let price = document.getElementById('price').value;
+        let brand = document.getElementById('brand').value.trim();
+        let stock = document.getElementById('stock').value;
+        let fileInputs = document.querySelectorAll('input[type="file"]');
+        let pdetails = document.getElementById('pdetails').value.trim();
+
+        const numberPattern = /\d/;
+        document.getElementById('error').innerText = "";
+        let valid = true;
+        if (pname == "" || numberPattern.test(pname)) {
+            document.getElementById('error').innerText = "Enter a valid product name";
+            valid = false;
+        }
+        else if (color == "" || numberPattern.test(color)) {
+            document.getElementById('error').innerText = "Enter a valid color";
+            valid = false;
+        }
+        else if (price.length < 0) {
+            document.getElementById('error').innerText = "Price can not be negative";
+            valid = false;
+        }
+        else if (brand == "" || numberPattern.test(brand)) {
+            document.getElementById('error').innerText = "Enter valid brandname";
+            valid = false;
+        }
+        else if (stock < 0) {
+            document.getElementById('error').innerText = "Stock can not be negative";
+            valid = false;
+        }
+        else if (pdetails == "") {
+            document.getElementById('error').innerText = "Enter valid product details";
+            valid = false;
+        }
+        // fileInputs.forEach(function (fileInput) {
+        //             if (fileInput.files.length === 0) {
+        //                 document.getElementById('error').innerText = "Please select an image file.";
+        //                 valid = false;
+        //             }
+        //         });
+        if (valid == true) {
+            editProduct();
+        }
+    })
+
+    function editProduct() {
+        let form = document.getElementById('editProductForm');
+        let id = document.getElementById('productid').value;
+        let formData = new FormData(form);
+        $.ajax({
+            method: 'POST',
+            url: `/admin/update-product/${id}`,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.success) {
+                    setTimeout(()=>{
+                        window.location.href = '/admin/products'
+                    },2000)
+                    
+                    swal("Product updated")
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
+    }
+</script>

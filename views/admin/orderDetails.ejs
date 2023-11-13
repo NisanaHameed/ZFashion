@@ -1,0 +1,50 @@
+<%- include('../layouts/admin/header.ejs') -%>
+
+<div class="container">
+<div class="row ">
+    <div class="col-12 grid-margin">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Delivery Address :</h4>
+          <div class="col-lg-4 my-4" >
+            <ul style="list-style-type: none;">
+           <li><b>Name :</b><%= order.deliveryDetails.Name %></li>
+           <li class="mt-2"><b>House Name: </b><%= order.deliveryDetails.HouseName %></li>
+           <li class="mt-1"><b>Locality :</b><%= order.deliveryDetails.Locality %></li>
+           <li class="mt-1"><b>City :</b><%= order.deliveryDetails.City %></li>
+           <li class="mt-1"><b>State :</b><%= order.deliveryDetails.State %></li>
+           <li class="mt-1"><b>Pincode :</b><%= order.deliveryDetails.Pincode %></li>
+           <li class="mt-1"><b>Mobile No :</b><%= order.deliveryDetails.Mobile %></li>
+        </ul>
+        </div>
+        </div>
+      </div>
+    </div>
+</div>
+<h4 class="card-title">Products :</h4>
+<div class="row mt-4">
+    
+    <% for(let i=0;i<order.Products.length;i++) { %> 
+    <div class="card mb-3" style="max-width: 540px;">
+        <div class="row g-0">
+          <div class="col-4 ">
+            <a href="/productDetail/<%= order.Products[i].ProductId._id %>"><img src="/userImages/<%= order.Products[i].ProductId.Image.image1 %>" class="img-fluid rounded-start p-3" alt="..."></a>
+          </div>
+          <div class="col-8">
+            <div class="card-body">
+              <h5 class="card-title"><%= order.Products[i].ProductId.product_name %></h5>
+              <p class="card-text"><b>Price : </b><%= order.Products[i].Price %></small></p>
+              <p class="card-text"><b>Quantity : </b><%= order.Products[i].Quantity %></p>
+              <p class="card-text"><b>Delivery : </b><%= order.deliveryDate.toISOString().split('T')[0] %></p>
+              <p class="card-text"><b>Ordered On : </b><%= order.Date.toISOString().split('T')[0] %></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% } %>
+</div>
+  </div>
+  
+  
+
+<%- include('../layouts/admin/footer.ejs') -%>

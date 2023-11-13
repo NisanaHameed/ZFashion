@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTP Verification</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    
+    .form-container {
+      width: 300px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .btn-submit {
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn-submit:hover {
+      background-color: #0056b3;
+    }
+
+    .timer {
+      font-size: 18px;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <form action="/verifyotp" method="post">
+      <div class="form-group">
+        <label for="exampleInputPassword1" class="form-label">Enter Your OTP</label>
+        <input type="text" class="form-control" id="exampleInputPassword1" name="otp" placeholder="Enter OTP">
+      </div>
+      <div >
+        <button type="submit" class="btn-submit">Submit</button>
+      </div>
+      
+    </form>
+    <div class="timer" id="timer"><span id="time">05:00</span></div>
+  </div>
+
+  <script>
+    let timerInterval = setInterval(function() {
+      let timeElement = document.getElementById('time');
+      let time = timeElement.textContent.split(':');
+      let minutes = parseInt(time[0], 10);
+      let seconds = parseInt(time[1], 10);
+
+      if (seconds > 0) {
+        seconds--;
+        if (seconds < 10) {
+          seconds = '0' + seconds;
+        }
+      } else if (minutes > 0) {
+        minutes--;
+        seconds = 59;
+      } else {
+        clearInterval(timerInterval);
+        // Handle timeout here
+      }
+
+      timeElement.textContent = `${minutes}:${seconds}`;
+    }, 1000);
+  </script>
+</body>
+</html>
+

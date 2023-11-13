@@ -1,0 +1,47 @@
+<%- include('../layouts/user/header.ejs') -%>
+<%- include('../layouts/user/sidebar.ejs') -%>
+
+<div class="container" style="min-height: 80vh;">
+    <h5 class="mt-5 mb-4">Please let us know the reason</h5>
+    <form action="/submitReturnProduct/<%= orderId %>" method="post">
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="returnreason" value="Size is not fit">
+            <label class="form-check-label">
+              Size is not fit
+            </label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="returnreason" value="Damaged product" >
+            <label class="form-check-label">
+             Damaged product
+            </label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="returnreason" value="Did not like the product" >
+            <label class="form-check-label">
+              Did not like the product
+            </label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="returnreason" value="Quality is less" >
+            <label class="form-check-label">
+              Quality is less 
+            </label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="returnreason" value="Wrong item received" >
+            <label class="form-check-label">
+              Wrong item received
+            </label>
+          </div>
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="radio" name="returnreason" value="Did not like the color" >
+            <label class="form-check-label">
+              Did not like the color
+            </label>
+          </div>
+          <Button type="submit" class="btn text-white px-3 mt-4 py-2" style="background-color: rgb(201, 20, 89);">SEND</Button>
+    </form>
+</div>
+</section>
+<%- include('../layouts/user/footer.ejs') -%>

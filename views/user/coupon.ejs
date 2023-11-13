@@ -1,0 +1,31 @@
+<%- include('../layouts/user/header.ejs') -%>
+<%- include('../layouts/user/sidebar.ejs') -%>
+
+<div class="container" style="min-height:80vh">
+  <% if(coupon.length>0){ %>
+<div class="row mt-5"> 
+    <% for(let i=0;i<coupon.length;i++){ %> 
+    <div class="col-lg-4 col-md-6">
+        <div class="card p-3" style="width: 18rem;">
+            <div class="card-body ">
+              <h5 class="card-title text-info"><b><%= coupon[i].Name %></b></h5>
+              <p class="card-text">On min.purchase of Rs <%= coupon[i].criteriaAmount %></p>
+              <p class="card-text">Code:<span class="text-danger ml-2"><%= coupon[i].couponCode %></span></p>
+              <p class="card-text">Expiry:<b><%= coupon[i].expiryDate.toLocaleDateString('en-US', { year:
+                'numeric', month: 'short', day: '2-digit'
+                }).replace(/\//g, '-') %></b></p>
+            </div>
+          </div>
+    </div>
+    <% } %>
+   
+</div>
+<% }else { %> 
+  <div class="mt-5">
+  <h4 class="text-danger">No coupons available!!</h>
+</div>
+  <%} %>
+</div>
+
+</section>
+<%- include('../layouts/user/footer.ejs') -%>

@@ -1,0 +1,219 @@
+<%- include('../layouts/user/header.ejs') -%>
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__text">
+                        <h4>Shopping Cart</h4>
+                        <div class="breadcrumb__links">
+                            <a href="/">Home</a>
+                            <a href="/shop">Shop</a>
+                            <span>Shopping Cart</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Shopping Cart Section Begin -->
+    <section class="shopping-cart spad">
+        <div class="container" style="min-height: 70vh;" id="cartpage">
+            <div class="row" id="reloadArea">
+                <% if(cart) { %> 
+                <% if (cart.Products.length>0) {%>
+                    <div class="col-lg-8 pr-5">
+                        <div class="shopping__cart__table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <% for(let i=0;i<cart.Products.length;i++) { %>
+                                        <tr>
+                                            <td class="product__cart__item">
+                                                <div class="product__cart__item__pic" ><a href="/productDetail/<%= cart.Products[i].ProductId._id %>">
+                                                    <img src="/userImages/<%= cart.Products[i].ProductId.Image.image1 %>"
+                                                        alt=""></a>
+                                                </div>
+                                                <div class="product__cart__item__text">
+                                                    <h6>
+                                                        <%= cart.Products[i].ProductId.product_name %>
+                                                    </h6>
+                                                    <h5>
+                                                        <%= cart.Products[i].Price %>
+                                                    </h5>
+                                                </div>
+                                            </td>
+                                            <td class="quantity__item">
+                                                
+                                                <div class="quantity-input">
+                                                    <button class="quantity-btn decrement"
+                                                        onclick="updateQuantity('<%= cart.Products[i].ProductId._id %>',-1)"><</button>
+                                                    <input type="text" value="<%= cart.Products[i].Quantity %>">
+                                                    <button class="quantity-btn increment" id="incrementproduct"
+                                                        onclick="updateQuantity('<%= cart.Products[i].ProductId._id %>',1)">></button>
+                                                </div> 
+
+                                            </td>
+                                            <td class="cart__price">
+                                                <%= cart.Products[i].Totalprice %>
+                                            </td>
+                                            <td class="cart__close"><a href="#"
+                                                    onclick="removeItem('<%= cart.Products[i].ProductId._id %>')"><i
+                                                        class="fa fa-close"></i></a></td>
+                                        </tr>
+                                        <% } %>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row py-5">
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                <div class="continue__btn">
+                                    <a href="/shop" style="background-color: rgb(201, 20, 89);color: white;">ADD MORE</a>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="cart__discount">
+
+                            <a href="/coupons" class="text-danger mb-4"><b>ALL COUPONS</b></a>
+            <% if(!cart.isCoupon) { %>
+                <form id="couponform" class="d-flex align-items-center mb-2" >
+                    <div style="flex: 1;">
+                        
+                        <input type="text" id="couponCode" name="coupon" class="form-control"
+                            placeholder="Have a coupon? Enter the code!">
+                    </div>
+                    <button type="submit"  class="btn btn-info" id="applyCouponButton">Apply</button>
+
+                </form>
+                <% }else { %>
+                    <form id="deletecoupon" class="d-flex align-items-center mb-2" >
+                        <div style="flex: 1;">
+
+                            <input id="" name="coupon" class="form-control"
+                                value="<%= cart.isCoupon.couponCode %>" disabled>
+                        </div>
+                        <button type="submit" class="btn btn-danger"
+                            onclick="deletecouponform('<%= cart.isCoupon.couponCode %>')">Remove</button>
+
+                    </form>
+
+                <% } %>
+                <div id="successMessage" class="text-danger"></div>
+                            <!-- <h6>Discount codes</h6>
+                        <form action="#">
+                            <input type="text" placeholder="Coupon code">
+                            <button type="submit">Apply</button>
+                        </form> -->
+                        </div>
+                        <div class="cart__total" id="pricefield">
+                            <h6>Cart total</h6>
+                            <!-- <ul>
+                                <li>Subtotal <span>
+                                       Rs <%= cart.totalAmount %>
+                                    </span></li>
+                                <li>Total <span>
+                                    Rs <%= cart.totalAmount %>
+                                            </span>
+                                </li>
+                            </ul> -->
+                            <ul class="checkout__total__all">
+                                <li>Subtotal <span>Rs <%= total %></span></li>
+                                <% if(cart.isCoupon){ %>
+                                    <li>Discount <span>Rs <%= cart.isCoupon.discountAmount %>
+                                        </span></li>
+                                    <% } %>
+                                        <li>Total <span>Rs <%= cart.totalAmount %></span></li>
+                            </ul>
+                            <a href="/get-Checkout" class="primary-btn">Proceed to checkout</a>
+                        </div>
+                    </div>
+                    <% } else { %>
+                        <div style="height: 250px;">
+                            <h3>Hey, it feels so light!</h3>
+                            <p>There is nothing in your bag.Let's add some items.</p>
+                            <a class="btn text-white" style="background-color: rgb(201, 20, 89);" href="/shop">SHOP</a>
+                        </div>
+                        <% } %>
+                        <% }else { %>
+                            <div style="height: 250px;">
+                                <h3>Hey, it feels so light!</h3>
+                                <p>There is nothing in your bag.Let's add some items.</p>
+                                <a class="btn text-white" style="background-color: rgb(201, 20, 89);" href="/shop">SHOP</a>
+                            </div>
+                            <% } %>
+
+            </div>
+        </div>
+    </section>
+    <!-- Shopping Cart Section End -->
+
+    <%- include('../layouts/user/footer.ejs'); -%>
+    <script>
+         
+            document.getElementById('applyCouponButton').addEventListener('click',(e)=>{
+                e.preventDefault();
+                let couponcode = document.getElementById('couponCode').value;
+                let data = { coupon: couponcode }
+                $.ajax({
+                    method: 'POST',
+                    url: '/applyCoupon',
+                    data: data,
+                    
+                    success: function (response) {
+                        if (response.couponapplied) {
+                            document.getElementById('couponCode').value = response.code;
+                            $('#cartpage').load('/cart #cartpage');
+                        } else if(response.maxamount){
+                            const successMessage = $('<div>').addClass('success-message').text('Total Amount is less');
+                            $('#successMessage').empty().append(successMessage);
+                        } else if (response.invalid) {
+                            const successMessage = $('<div>').addClass('success-message').text('Invalid Coupon');
+                            $('#successMessage').empty().append(successMessage);
+                        } else if (response.used) {
+                            const successMessage = $('<div>').addClass('success-message').text('You have already used this coupon!');
+                            $('#successMessage').empty().append(successMessage);
+                        } else if (response.expired) {
+                            const successMessage = $('<div>').addClass('success-message').text('Coupon is expired!!');
+                            $('#successMessage').empty().append(successMessage);
+                        }
+                    }
+                })
+            
+
+            })
+
+            function deletecouponform(code) {
+                let data = { code: code }
+                $.ajax({
+                    method: 'PUT',
+                    url: '/removeCoupon',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        if (response.success) {
+                            $('#cartpage').load('/cart #cartpage');
+                        }
+                    },
+                    error: function (response) {
+                        console.log(err);
+                        Swal("Something went wrong!")
+                    }
+                })
+            }
+               
+    </script>

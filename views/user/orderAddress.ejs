@@ -1,0 +1,107 @@
+<%- include('../layouts/user/header.ejs') -%>
+<div class="container d-flex justify-content-center mt-4" style="min-height: 70rem;">
+    <form method="post" style="width: 40rem; height: 60rem; background-color: rgb(235, 236, 239);" class="p-5" id="orderaddress">
+        <div class="checkout__input">
+            <p>Name<span>*</span></p>
+            <input type="text" name="name" id="name" required>
+        </div>
+        <div class="checkout__input">
+            <p>Mobile<span>*</span></p>
+            <input type="Number" name="mobile" id="mobile" pattern="[0-9]{10}" required>
+        </div>
+        <div class="checkout__input">
+            <p>State<span>*</span></p>
+            <input type="text" name="state" id="state" required>
+        </div>
+        <div class="checkout__input">
+            <p>HouseName<span>*</span></p>
+            <input type="text" name="housename" class="checkout__input__add" id="housename" required>
+        </div>
+        <div class="checkout__input">
+            <p>City/District<span>*</span></p>
+            <input type="text" name="city" id="city" required>
+        </div>
+        <div class="checkout__input">
+            <p>Locality/Town<span>*</span></p>
+            <input type="text" name="locality" id="locality" required>
+        </div>
+        <div class="checkout__input">
+            <p>Pincode<span>*</span></p>
+            <input type="text" name="pincode" id="pincode" pattern="[0-9]{6}" required>
+        </div>
+        <p class="text-danger" id="error"></p>
+        <div class="my-5 text-center">
+            <button type="submit" class="btn text-white px-5 py-2" style="background-color: rgb(201, 20, 89);">ADD</button>
+        </div>
+    </form>
+</div>
+
+<%- include('../layouts/user/footer.ejs') -%>
+<script>
+    document.getElementById('orderaddress').addEventListener('submit',(e)=>{
+                e.preventDefault();
+
+                let name = document.getElementById('name').value.trim();
+                let mobile = document.getElementById('mobile').value;
+                let state = document.getElementById('state').value.trim();
+                let housename = document.getElementById('housename').value.trim();
+                let city = document.getElementById('city').value.trim();
+                let locality = document.getElementById('locality').value.trim();
+                let pincode = document.getElementById('pincode').value;
+                const numberPattern = /\d/;
+                document.getElementById('error').innerText = "";
+                let valid = true;
+                if(name=="" || numberPattern.test(name)){
+                    document.getElementById('error').innerText = "Enter a valid name";
+                    valid=false;
+                } 
+                else if(mobile.length!==10){
+                    document.getElementById('error').innerText = "Enter a valid mobile number";
+                    valid=false;
+                } 
+                else if(state=="" || numberPattern.test(state)){
+                    document.getElementById('error').innerText = "Enter valid state";
+                    valid=false;
+                }
+                else if(housename=="" || numberPattern.test(housename)){
+                    document.getElementById('error').innerText = "Enter valid housename";
+                    valid=false;
+                }
+                else if(city=="" || numberPattern.test(city)){
+                    document.getElementById('error').innerText = "Enter valid city";
+                    valid=false;
+                }
+                else if(locality=="" || numberPattern.test(locality)){
+                    document.getElementById('error').innerText = "Enter valid locality";
+                    valid=false;
+                }
+                else if(pincode.length!==6){
+                    document.getElementById('error').innerText = "Enter a valid pincode";
+                    valid=false;
+                }
+                if(valid==true){
+                    submitAddress();
+                }
+            })
+                
+            
+            function submitAddress(){
+                let form = document.getElementById('orderaddress');
+                const formdata = $(form).serialize(); 
+
+                $.ajax({
+                    method:'POST',
+                    url:'/addOrderAddress',
+                    data:formdata,
+                    success:function(response){
+                        if(response.success){
+                            window.location.href = '/get-checkout';
+                        }
+                    },
+                    error:function(err){
+                        console.log(err);
+                        swal("Something went wrong!")
+                    }
+                })
+            }
+</script>

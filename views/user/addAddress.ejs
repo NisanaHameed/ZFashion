@@ -1,0 +1,122 @@
+<%- include('../layouts/user/header.ejs') -%>
+    <%- include('../layouts/user/sidebar.ejs') -%>
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-lg-8">
+                    <form method="post" id="addressForm">
+                        <div class="checkout__input">
+                            <p>Name<span>*</span></p>
+                            <input type="text" name="name" id="name" required>
+                            <p class="text-danger" id="error1"></p>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Mobile<span>*</span></p>
+                            <input type="Number" name="mobile" id="mobile" required pattern="[0-9]{10}">
+                            <p class="text-danger" id="error2"></p>
+                        </div>
+                        <div class="checkout__input">
+                            <p>State<span>*</span></p>
+                            <input type="text" name="state" id="state" required>
+                            <p class="text-danger" id="error3"></p>
+                        </div>
+                        <div class="checkout__input">
+                            <p>HouseName<span>*</span></p>
+                            <input type="text" name="housename" id="housename" class="checkout__input__add" required>
+                            <p class="text-danger" id="error4"></p>
+                        </div>
+                        <div class="checkout__input">
+                            <p>City/District<span>*</span></p>
+                            <input type="text" name="city" id="city" required>
+                            <p class="text-danger" id="error5"></p>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Locality/Town<span>*</span></p>
+                            <input type="text" name="locality" id="locality" required>
+                            <p class="text-danger" id="error6"></p>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Pincode<span>*</span></p>
+                            <input type="Number" name="pincode" id="pincode" required pattern="[0-9]{6}">
+                            <p class="text-danger" id="error7"></p>
+                        </div>
+                        <div>
+                            <p class="text-danger" id="error"></p>
+                        </div>
+                        <div class="my-5 text-center">
+                            <button type="submit" class="btn text-white px-5 py-2" style="background-color: rgb(201, 20, 89);">ADD</button>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+        </section>
+        <%- include('../layouts/user/footer.ejs') -%>
+        <script>
+            document.getElementById('addressForm').addEventListener('submit',(e)=>{
+                e.preventDefault();
+
+                let name = document.getElementById('name').value.trim();
+                let mobile = document.getElementById('mobile').value;
+                let state = document.getElementById('state').value.trim();
+                let housename = document.getElementById('housename').value.trim();
+                let city = document.getElementById('city').value.trim();
+                let locality = document.getElementById('locality').value.trim();
+                let pincode = document.getElementById('pincode').value;
+                const numberPattern = /\d/;
+                document.getElementById('error').innerText = "";
+                let valid = true;
+                if(name=="" || numberPattern.test(name)){
+                    document.getElementById('error').innerText = "Enter a valid name";
+                    valid=false;
+                } 
+                else if(mobile.length!==10){
+                    document.getElementById('error').innerText = "Enter a valid mobile number";
+                    valid=false;
+                } 
+                else if(state=="" || numberPattern.test(state)){
+                    document.getElementById('error').innerText = "Enter valid state";
+                    valid=false;
+                }
+                else if(housename=="" || numberPattern.test(housename)){
+                    document.getElementById('error').innerText = "Enter valid housename";
+                    valid=false;
+                }
+                else if(city=="" || numberPattern.test(city)){
+                    document.getElementById('error').innerText = "Enter valid city";
+                    valid=false;
+                }
+                else if(locality=="" || numberPattern.test(locality)){
+                    document.getElementById('error').innerText = "Enter valid locality";
+                    valid=false;
+                }
+                else if(pincode.length!==6){
+                    document.getElementById('error').innerText = "Enter a valid pincode";
+                    valid=false;
+                }
+                if(valid==true){
+                    submitAddress();
+                }
+            })
+                
+            
+            function submitAddress(){
+                let form = document.getElementById('addressForm');
+                const formdata = $(form).serialize(); 
+
+                $.ajax({
+                    method:'POST',
+                    url:'/addNewAddress',
+                    data:formdata,
+                    success:function(response){
+                        if(response.success){
+                            window.location.href = '/address';
+                        }
+                    },
+                    error:function(err){
+                        console.log(err);
+                        swal("Something went wrong!")
+                    }
+                })
+            }
+        </script>

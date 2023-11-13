@@ -1,0 +1,62 @@
+body{
+  /* background-image: url('/user/img/joyful-girl-with-curly-brown-hair-dancing-purple-background-with-kissing-face-expression.jpg');
+  background-repeat: no-repeat;
+  background-size: cover; 
+  opacity: 0.5; */
+  position: relative;
+}
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/user/img/joyful-girl-with-curly-brown-hair-dancing-purple-background-with-kissing-face-expression.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0.8;
+  z-index: -1; /* Place the pseudo-element behind the content */
+}
+.frmstyl{
+    border-radius: 5px;
+    background-color: rgba(238, 232, 232, 0.35);
+    width: 25rem;
+    /* box-shadow: 0px 0px 10px #5a3042; */
+  }
+  .frmstyl label{
+    font-size: 15px;
+    letter-spacing: 0.3px;
+    font-family: sans-serif;
+  }
+  .outer{
+    min-height: 80vh;
+   
+  }
+.signup{
+  color:white;
+  text-align: center;
+  text-decoration: none;
+  background-color: rgb(223, 70, 96);
+}
+.outer p{
+    font-size: 0.8rem;
+}
+h6{
+  text-align: center;
+}
+.loginbutton{
+  background-color: #a0c0ef;
+  color: black;
+}
+a{
+    text-decoration: none;
+}
+
+.no-spinners::-webkit-inner-spin-button,
+.no-spinners::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
