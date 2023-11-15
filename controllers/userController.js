@@ -149,9 +149,10 @@ const loadShop = async (req, res) => {
         if (!findCategory.length) {
             findCategory = await Category.find();
         }
-        categorytoFront = findCategory.map(val => {
+        let categorytoFront = findCategory.map(val => {
             return val.name;
         })
+        let selectedBrand = req.query.searchbrand || ""
         let findBrand = req.query.searchbrand || "";
         if (!findBrand.length) {
             findBrand = brands;
@@ -159,15 +160,14 @@ const loadShop = async (req, res) => {
         let search = req.query.search || "";
         console.log("Datatype" + typeof (findCategory));
         console.log("Datatype" + typeof (findBrand));
-        let sort = req.query.sort;
-        console.log('sort...' + sort)
+        let sort = req.query.sort;       
         let sortProduct;
         if (sort == 1) {
             sortProduct = { Price: 1 };
         } else if (sort == -1) {
             sortProduct = { Price: -1 };
         } else {
-            sort = 0
+            sortProduct = {};
         }
 
         const product = await Product.find({
@@ -178,11 +178,8 @@ const loadShop = async (req, res) => {
                 { product_name: { $regex: search, $options: 'i' } },
             ]
         }).sort(sortProduct);
-        // console.log(product)
-        // const product = await Product.find({ $or: [{ product_name: { $regex: search, $options: 'i' } }, {Category:{ $in: findCategory }}, { Brand:{$in: findBrand }}] });
-
-        // console.log(brands)
-        res.render('shop', { product, category, brands, username });
+        console.log('selectedCategory'+selectedCategory+'Datatype'+typeof(selectedCategory))
+        res.render('shop', { product, category, brands, username,selectedCategory,selectedBrand,sort });
     } catch (error) {
         console.log(error);
     }

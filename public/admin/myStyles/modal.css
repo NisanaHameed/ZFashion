@@ -34,3 +34,6 @@
       text-decoration: none;
       cursor: pointer;
   }
+  .apexcharts-menu-item {
+    color: black !important; /* Change this to the color you want */
+  }
