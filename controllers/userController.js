@@ -1,5 +1,4 @@
 var express = require('express');
-const user = require('../models/userModel');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
@@ -8,9 +7,12 @@ const Category = require('../models/categoryModel');
 const User = require('../models/userModel');
 const Cart = require('../models/cartModel');
 const Rate = require('../models/rateModel');
+const Wallet = require('../models/walletModel');
+const Banner = require('../models/bannerModel');
 
 let generatedOTP;
 let userdata;
+let referralcode;
 const password = process.env.password
 
 const transporter = nodemailer.createTransport({
@@ -23,6 +25,8 @@ const transporter = nodemailer.createTransport({
 
 const loadSignup = function (req, res) {
     res.render('signup');
+    referralcode = req.query.ref;
+    console.log(req.query)
 }
 
 // const otpform = (req,res)=>{
@@ -33,22 +37,29 @@ const loadSignup = function (req, res) {
 //     }
 // }
 
+function generateUniqueID() {
+    const timestamp = new Date().getTime().toString(36);
+    const randomString = Math.random().toString(36).substring(2, 8);
+    return `${timestamp}${randomString}`;
+}
+
 const sentotp = async (req, res) => {
 
     userdata = {
         name: req.body.name,
         email: req.body.email,
         mobile: req.body.mobile,
-        password: await bcrypt.hash(req.body.password, 10)
+        password: await bcrypt.hash(req.body.password, 10),
+        referralCode: generateUniqueID()
     }
-
+    console.log('referralcode' + referralcode)
     const email = req.body.email;
-    const check = await user.findOne({ email: email });
+    const check = await User.findOne({ email: email });
     if (check) {
         res.render('signup', { error: "Email already exists!!" })
     } else {
         generatedOTP = randomstring.generate(6);
-
+        console.log('OTP  ' + generatedOTP)
         const mailOptions = {
             from: 'nisana1994@gmail.com',
             to: email,
@@ -79,10 +90,19 @@ const verifyotp = async (req, res) => {
     try {
         const enteredotp = req.body.otp;
         if (generatedOTP == enteredotp) {
-            const data = await user.insertMany([userdata]);
+            const data = await User.insertMany([userdata]);
+            if (referralcode) {
+                let referredUser = await User.findOne({ referralCode: referralcode });
+                let newtransaction = {
+                    Amount: 100,
+                    Date: new Date()
+                }
+                await Wallet.updateOne({ UserId: referredUser._id }, { $inc: { Balance: 100 }, $push: { Transaction: newtransaction } }, { upsert: true })
+                await Wallet.updateOne({ UserId: data[0]._id }, { $inc: { Balance: 100 }, $push: { Transaction: newtransaction } }, { upsert: true })
+            }
             req.session.userLoggedIn = true;
-            req.session.userId = data._id;
-            req.session.username = data.name;
+            req.session.userId = data[0]._id;
+            req.session.username = data[0].name;
             res.redirect('/');
         } else {
             res.send('incorrect otp');
@@ -98,9 +118,10 @@ const verifyotp = async (req, res) => {
 const home = async (req, res) => {
     try {
         let username = req.session.username;
-        const product = await Product.find();
+        const product = await Product.find({Stock:{$ne:0}}).populate('Offer');
         const category = await Category.find();
-        res.render('home', { product, category, username });
+        const banner = await Banner.find();
+        res.render('home', { product, category, username, banner });
     } catch (error) {
         console.log(error);
     }
@@ -115,7 +136,7 @@ const loadLogin = function (req, res) {
 
 const login = async (req, res) => {
     try {
-        const finduser = await user.findOne({ email: req.body.email });
+        const finduser = await User.findOne({ email: req.body.email });
         if (finduser) {
             const isPasswordValid = await bcrypt.compare(req.body.password, finduser.password);
             if (isPasswordValid) {
@@ -160,7 +181,7 @@ const loadShop = async (req, res) => {
         let search = req.query.search || "";
         console.log("Datatype" + typeof (findCategory));
         console.log("Datatype" + typeof (findBrand));
-        let sort = req.query.sort;       
+        let sort = req.query.sort;
         let sortProduct;
         if (sort == 1) {
             sortProduct = { Price: 1 };
@@ -170,16 +191,16 @@ const loadShop = async (req, res) => {
             sortProduct = {};
         }
 
-        const product = await Product.find({
+        let product = await Product.find({
             Category: categorytoFront,
             Brand: findBrand,
             $or: [
                 // { Brand: { $regex: search, $options: 'i' } } ,
                 { product_name: { $regex: search, $options: 'i' } },
             ]
-        }).sort(sortProduct);
-        console.log('selectedCategory'+selectedCategory+'Datatype'+typeof(selectedCategory))
-        res.render('shop', { product, category, brands, username,selectedCategory,selectedBrand,sort });
+        }).populate('Offer').sort(sortProduct);
+        console.log('selectedCategory' + selectedCategory + 'Datatype' + typeof (selectedCategory))
+        res.render('shop', { product, category, brands, username, selectedCategory, selectedBrand, sort });
     } catch (error) {
         console.log(error);
     }
@@ -217,9 +238,9 @@ const loadProductdDetail = async (req, res) => {
     try {
         let username = req.session.username;
         let id = req.params.id;
-        const product = await Product.findOne({ _id: id });
+        const product = await Product.findOne({ _id: id }).populate('Offer');
         let catgry = product.Category;
-        let similar = await Product.find({ Category: catgry, _id: { $ne: id } });
+        let similar = await Product.find({ Category: catgry, _id: { $ne: id } }).populate('Offer');
         const rate = await Rate.findOne({ ProductId: id }).populate('User.UserId');
         // console.log('Rate' + rate);
         res.render('productdetail', { product, similar, rate, username });
@@ -246,17 +267,15 @@ const editUserProfile = async (req, res) => {
 
         console.log('hii otp')
         let userid = req.session.userId;
-        // console.log(req.body.email)
-        // console.log(userid)
         let email = req.body.email;
         const finduser = await User.findById(userid);
-        if(finduser.email==email){
+        if (finduser.email == email) {
             await User.updateOne({ _id: userid }, { $set: { name: req.body.name, mobile: req.body.mobile } });
-            return res.json({edited:true});
+            return res.json({ edited: true });
         }
         const userexist = await User.findOne({ email: email, _id: { $ne: userid } });
         if (userexist) {
-            return res.json({userExist:true});
+            return res.json({ userExist: true });
         }
         editedData = {
             name: req.body.name,
@@ -342,6 +361,15 @@ const logout = (req, res) => {
     }
 }
 
+const getContact = (req,res)=>{
+    try{
+        let username = req.session.username;
+        res.render('contact',{username});
+    }catch(err){
+        console.log(err);
+    }
+}
+
 module.exports = {
     loadSignup,
     sentotp,
@@ -357,5 +385,6 @@ module.exports = {
     editUserProfile,
     editVerifyOtp,
     changePassword,
-    logout
+    logout,
+    getContact
 }

@@ -73,7 +73,16 @@
                         <div class="product__details__text">
                             <h4 class="py-3"><%= product.Brand %></h4>
                             <h6 class="pb-3"><%= product.product_name %></h6>                           
-                            <h4>Rs <%= product.Price %></h4>                            
+                            <!-- <h4>Rs <%= product.Price %></h4>                             -->
+                            <% if(product.Offer){ %> 
+                                <% if(new Date(product.Offer.startDate)<=Date.now() && new Date(product.Offer.endDate)>=Date.now()) { %> 
+                            <h6 class="pt-2"><b> <del>Rs <%= product.Price %></del><span class="ml-2 text-success">Rs <%= Math.ceil((product.Price)-(product.Price*product.Offer.Value/100)) %></span></b></h6> 
+                            <% }else { %>
+                                <h6 class="pt-2"><b>Rs <%= product.Price %></b></h6>
+                                 <% } %> 
+                            <% } else { %> 
+                                <h6 class="pt-2"><b>Rs <%= product.Price %></b></h6>
+                                <% }%>
                             <div class="product__details__option">
                                 
                                 <div class="product__details__option__size">
@@ -178,14 +187,23 @@
                 <div class="product__item">
                     <div class="product__item__pic set-bg" data-setbg="/userImages/<%= similar[i].Image.image1 %>">                        
                         <ul class="product__hover">
-                            <li><a href="#"><img src="/user/img/icon/heart.png" alt=""></a></li>                       
+                            <li><a onclick="addToWishlist('<%= similar[i]._id %>')"><img src="/user/img/icon/heart.png" alt=""></a></li>                       
                             <li><a href="/productDetail/<%= similar[i]._id %>"><img src="/user/img/icon/search.png" alt=""></a></li>
                         </ul>
                     </div>
                     <div>
                          
                         <h6 class="mt-3"><%= similar[i].product_name %></h6>
-                        <h5 class="pt-2"><b> Rs <%= similar[i].Price %></b></h5>   
+                        <!-- <h5 class="pt-2"><b> Rs <%= similar[i].Price %></b></h5>    -->
+                        <% if(similar[i].Offer){ %> 
+                            <% if(new Date(similar[i].Offer.startDate)<=Date.now() && new Date(similar[i].Offer.endDate)>=Date.now()) { %> 
+                        <h6 class="pt-2"><b> <del>Rs <%= similar[i].Price %></del><span class="ml-2 text-success">Rs <%= Math.ceil((similar[i].Price)-(similar[i].Price*similar[i].Offer.Value/100)) %></span></b></h6> 
+                        <% }else { %>
+                            <h6 class="pt-2"><b>Rs <%= similar[i].Price %></b></h6>
+                             <% } %> 
+                        <% } else { %> 
+                            <h6 class="pt-2"><b>Rs <%= similar[i].Price %></b></h6>
+                            <% }%>
                         <% if(similar[i].Stock==0) { %>  
                             <span class="text-danger text-small">Out of Stock</span>
                             <% } %>

@@ -24,6 +24,9 @@ const user = mongoose.Schema({
     isBlock:{
         type:Boolean,
         dafault:false
+    },
+    referralCode:{
+        type:String
     }
 });
 

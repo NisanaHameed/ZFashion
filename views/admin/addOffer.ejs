@@ -1,0 +1,87 @@
+<%- include('../layouts/admin/header.ejs') -%>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-6 grid-margin stretch-card">
+                <div class="card" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);">
+                    <div class="card-body">
+                        <h4 class="card-title pb-5">Add Offer</h4>
+                        <form class="forms-sample" method="post" id="addofferform">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" class="form-control" name="name" id="name">
+                            </div>
+                            <div class="form-group">
+                                <label>Value</label>
+                                <input type="Number" class="form-control" name="value" id="value">
+                            </div>
+                            <div class="form-group">
+                                <label>Start Date</label>
+                                <input type="text" class="form-control" name="startdate" id="startdate">
+                            </div>
+                            <div class="form-group">
+                                <label>End Date</label>
+                                <input type="text" class="form-control" name="enddate" id="enddate">
+                            </div>
+                            <p class="text-danger mt-3" id="error"></p>
+                            <button type="submit" class="btn btn-primary mt-4">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../layouts/admin/footer.ejs') -%>
+        <script>
+            document.getElementById('addofferform').addEventListener('submit', (e) => {
+                e.preventDefault();
+                let name = document.getElementById('name').value.trim();
+                let value = document.getElementById('value').value.trim();
+                let startdate = document.getElementById('startdate').value.trim();
+                let enddate = document.getElementById('enddate').value.trim();
+                let error = document.getElementById('error')
+                error.innerText = "";
+                let valid = true;
+                if (name == "") {
+                    error.innerText = "Enter Offername";
+                    valid = false;
+                } else if (value == "" || value<0) {
+                    error.innerText = "Enter valid value";
+                    valid = false;
+                } else if (startdate == "" ) {
+                    error.innerText = "Enter valid Start Date";
+                    valid = false;
+                }else if (enddate == "" || new Date(startdate)>new Date(enddate)) {
+                    error.innerText = "Enter valid End Date";
+                    valid = false;
+                }
+                if (valid == true) {
+                    addOfferr();
+                }
+            })
+
+            function addOfferr() {
+                console.log("heyyyyyyyyyyy")
+                let form = document.getElementById('addofferform');
+                let formdata = $('form').serialize();
+                console.log(formdata)
+                $.ajax({
+                    method: 'POST',
+                    url: '/admin/addOffer',
+                    data: formdata,
+                    success: function (response) {
+                        if (response.success) {
+                            swal("Offer added!");
+                            setTimeout(() => {
+                                window.location.href = '/admin/offer'
+                            }, 1500)
+                        } else if (response.error) {
+                            swal("Something went wrong!")
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                })
+            }
+        </script>

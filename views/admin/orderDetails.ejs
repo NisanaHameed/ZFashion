@@ -7,14 +7,14 @@
         <div class="card-body">
           <h4 class="card-title">Delivery Address :</h4>
           <div class="col-lg-4 my-4" >
-            <ul style="list-style-type: none;">
-           <li><b>Name :</b><%= order.deliveryDetails.Name %></li>
-           <li class="mt-2"><b>House Name: </b><%= order.deliveryDetails.HouseName %></li>
-           <li class="mt-1"><b>Locality :</b><%= order.deliveryDetails.Locality %></li>
-           <li class="mt-1"><b>City :</b><%= order.deliveryDetails.City %></li>
-           <li class="mt-1"><b>State :</b><%= order.deliveryDetails.State %></li>
-           <li class="mt-1"><b>Pincode :</b><%= order.deliveryDetails.Pincode %></li>
-           <li class="mt-1"><b>Mobile No :</b><%= order.deliveryDetails.Mobile %></li>
+            <ul style="list-style-type: none; color: rgb(143, 143, 143);">
+           <li><b class="pr-2">Name :</b><%= order.deliveryDetails.Name %></li>
+           <li class="mt-2"><b class="pr-2">House Name:</b><%= order.deliveryDetails.HouseName %></li>
+           <li class="mt-1"><b class="pr-2">Locality :</b><%= order.deliveryDetails.Locality %></li>
+           <li class="mt-1"><b class="pr-2">City :</b><%= order.deliveryDetails.City %></li>
+           <li class="mt-1"><b class="pr-2">State :</b><%= order.deliveryDetails.State %></li>
+           <li class="mt-1"><b class="pr-2">Pincode :</b><%= order.deliveryDetails.Pincode %></li>
+           <li class="mt-1"><b class="pr-2">Mobile No :</b><%= order.deliveryDetails.Mobile %></li>
         </ul>
         </div>
         </div>
@@ -30,13 +30,16 @@
           <div class="col-4 ">
             <a href="/productDetail/<%= order.Products[i].ProductId._id %>"><img src="/userImages/<%= order.Products[i].ProductId.Image.image1 %>" class="img-fluid rounded-start p-3" alt="..."></a>
           </div>
-          <div class="col-8">
+          <div class="col-8" style=" color: rgb(143, 143, 143);">
             <div class="card-body">
               <h5 class="card-title"><%= order.Products[i].ProductId.product_name %></h5>
               <p class="card-text"><b>Price : </b><%= order.Products[i].Price %></small></p>
               <p class="card-text"><b>Quantity : </b><%= order.Products[i].Quantity %></p>
               <p class="card-text"><b>Delivery : </b><%= order.deliveryDate.toISOString().split('T')[0] %></p>
               <p class="card-text"><b>Ordered On : </b><%= order.Date.toISOString().split('T')[0] %></p>
+              <% if(order.Status=="Returned"){ %> 
+                <p class="card-text"><b>Return Reason : </b><%= order.returnReason %></p>
+                <% } %>
             </div>
           </div>
         </div>

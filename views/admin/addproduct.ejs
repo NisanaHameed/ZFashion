@@ -3,7 +3,7 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-12 grid-margin stretch-card">
-                <div class="card">
+                <div class="card" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);">
                     <div class="card-body">
                         <h4 class="card-title pb-4">Add Product</h4>
                         <!-- <p class="card-description"> Basic form elements </p> -->
@@ -34,6 +34,19 @@
                                         </option>
                                         <% }); %>
 
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="categoryDropdown">Offer</label>
+                                <select class="form-control text-white" id="categoryDropdown" name="offer">
+                                    <option value="">Select Offer</option>
+                                    <% if(offer){ %> 
+                                    <% offer.forEach(ofr=> { %>
+                                        <option value="<%= ofr._id %>">
+                                            <%= ofr.Name %>
+                                        </option>
+                                        <% }); %>
+                                        <% } %>
                                 </select>
                             </div>
 
@@ -77,25 +90,21 @@
                             <div class="form-row">
 
                                 <div class="form-group col-md-3">
-                                    <!-- <label for="imageUpload1">Image 1 Upload</label> -->
                                     <input type="file" class="form-control" id="imageUpload1" name="image1"
                                         accept="image/*">
                                 </div>
 
                                 <div class="form-group col-md-3">
-                                    <!-- <label for="imageUpload2">Image 2 Upload</label> -->
                                     <input type="file" class="form-control" id="imageUpload2" name="image2"
                                         accept="image/*">
                                 </div>
 
                                 <div class="form-group col-md-3">
-                                    <!-- <label for="imageUpload3">Image 3 Upload</label> -->
                                     <input type="file" class="form-control" id="imageUpload3" name="image3"
                                         accept="image/*">
                                 </div>
 
                                 <div class="form-group col-md-3">
-                                    <!-- <label for="imageUpload4">Image 4 Upload</label> -->
                                     <input type="file" class="form-control" id="imageUpload4" name="image4"
                                         accept="image/*">
                                 </div>

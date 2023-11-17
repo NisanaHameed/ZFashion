@@ -51,6 +51,10 @@ const productSchema = mongoose.Schema({
     Stock:{
         type:Number,
         required:true
+    },
+    Offer:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Offer'
     }
 });
 

@@ -23,251 +23,221 @@
     <section class="checkout spad">
 
         <div class="container" id="reloadorderArea">
-            <!-- <a href="/coupons" class="text-danger mb-4"><b>ALL COUPONS</b></a>
-            <% if(!cart.isCoupon) { %>
-                <div id="couponform" class="d-flex align-items-center mb-2" style="width: 60%;">
-                    <div style="flex: 1;">
-                        
-                        <input type="text" id="couponCode" name="coupon" class="form-control"
-                            placeholder="Have a coupon? Enter the code!">
-                    </div>
-                    <button type="submit" onclick="applycoupon()" class="btn btn-info" id="applyCouponButton">Apply</button>
+            <% if(message) { %>
+                <h5>
+                    <%= message %>
+                </h5>
+                <% } %>
+                    <div class="checkout__form mt-4">
+                        <form id="orderFormsubmit" method="post">
+                            <div class="row ">
+                                <div class="col-lg-7 col-md-6 pr-5">
+                                    <% if(address) { %>
+                                        <h6 class="mb-3"><b>Select an address</b></h6>
+                                        <!-- <div class="row pb-5"> -->
 
-                </div>
-                <% }else { %>
-                    <form id="deletecoupon" class="d-flex align-items-center mb-2" style="width: 60%;">
-                        <div style="flex: 1;">
+                                        <% for(let i=0;i<address.Address.length;i++) { %>
 
-                            <input id="" name="coupon" class="form-control"
-                                value="<%= cart.isCoupon.couponCode %>" disabled>
-                        </div>
-                        <button type="submit" class="btn btn-danger"
-                            onclick="deletecouponform('<%= cart.isCoupon.couponCode %>')">Remove</button>
-
-                    </form>
-                    <% } %>
-                        <div id="successMessage" class="text-danger"></div> -->
-                        <% if(message) { %>
-                            <h5>
-                                <%= message %>
-                            </h5>
-                            <% } %>
-                                <div class="checkout__form mt-4">
-                                    <form id="orderFormsubmit" method="post">
-                                        <div class="row ">
-                                            <div class="col-lg-7 col-md-6 pr-5">
-                                                <% if(address) { %>
-                                                    <h6 class="mb-3"><b>Select an address</b></h6>
-                                                    <!-- <div class="row pb-5"> -->
-
-                                                    <% for(let i=0;i<address.Address.length;i++) { %>
-
-                                                        <div style="display: -webkit-box;" class="mb-3">
-                                                            <input class="mr-2" type="radio" id="cod" name="address"
-                                                                value="<%= i %>" required>
-                                                            <ul style="list-style-type: none;">
-                                                                <li><b>
-                                                                        <%= address.Address[i].Name %>
-                                                                    </b></li>
-                                                                <li class="mt-2">
-                                                                    <%= address.Address[i].HouseName %>
-                                                                </li>
-                                                                <li class="mt-1">
-                                                                    <%= address.Address[i].City %>
-                                                                </li>
-                                                                <li class="mt-1">
-                                                                    <%= address.Address[i].Locality %>
-                                                                </li>
-                                                                <li class="mt-1">
-                                                                    <%= address.Address[i].State %>
-                                                                </li>
-                                                                <li class="mt-1">
-                                                                    <%= address.Address[i].Pincode %>
-                                                                </li>
-                                                                <li class="mt-1">
-                                                                    <%= address.Address[i].Mobile %>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                        <% } %>
-                                                            <% } %>
-                                                                <div class="mt-4">
-                                                                    <a class="btn" style="color: rgb(201, 20, 89);"
-                                                                        href="/OrderAddress"><b>+ ADD NEW
-                                                                            ADDRESS</b></a>
-                                                                </div>
-
+                                            <div style="display: -webkit-box;" class="mb-3">
+                                                <input class="mr-2" type="radio" id="cod" name="address"
+                                                    value="<%= i %>" required>
+                                                <ul style="list-style-type: none;">
+                                                    <li><b>
+                                                            <%= address.Address[i].Name %>
+                                                        </b></li>
+                                                    <li class="mt-2">
+                                                        <%= address.Address[i].HouseName %>
+                                                    </li>
+                                                    <li class="mt-1">
+                                                        <%= address.Address[i].City %>
+                                                    </li>
+                                                    <li class="mt-1">
+                                                        <%= address.Address[i].Locality %>
+                                                    </li>
+                                                    <li class="mt-1">
+                                                        <%= address.Address[i].State %>
+                                                    </li>
+                                                    <li class="mt-1">
+                                                        <%= address.Address[i].Pincode %>
+                                                    </li>
+                                                    <li class="mt-1">
+                                                        <%= address.Address[i].Mobile %>
+                                                    </li>
+                                                </ul>
                                             </div>
-
-                                            <div class="col-lg-5 col-md-6">
-                                                <div class="checkout__order">
-                                                    <h4 class="order__title">Your order</h4>
-                                                    <div class="checkout__order__products">Product <span>Total</span>
+                                            <% } %>
+                                                <% } %>
+                                                    <div class="mt-4">
+                                                        <a class="btn" style="color: rgb(201, 20, 89);"
+                                                            href="/OrderAddress"><b>+ ADD NEW
+                                                                ADDRESS</b></a>
                                                     </div>
-                                                    <ul class="checkout__total__products">
-                                                        <% for(let i=0;i<cart.Products.length;i++) { %>
-                                                            <li>
-                                                                <%= cart.Products[i].ProductId.product_name %><b>
-                                                                        <span>Rs <%= cart.Products[i].Totalprice %>
-                                                                        </span></b>
-                                                            </li>
 
-                                                            <% } %>
-                                                    </ul>
-                                                    <ul class="checkout__total__all">
-                                                        <li>Subtotal <span>Rs <%= total %></span></li>
-                                                                <li>Total <span>Rs <%= cart.totalAmount %></span></li>
-                                                    </ul>
-                                                    <h5 class="order__title">PAYMENT</h5>
-                                                    <input type="radio" id="cod" name="payment" value="Cash On Delivery"
-                                                        required>
-                                                    <label for="option1" class="m-2">Cash On Delivery</label><br>
+                                </div>
 
-                                                    <input type="radio" id="gpay" name="payment" value="Online Payment" required>
-                                                    <label for="option2" class="m-2">Online Payment</label><br>
+                                <div class="col-lg-5 col-md-6">
+                                    <div class="checkout__order">
+                                        <h4 class="order__title">Your order</h4>
+                                        <div class="checkout__order__products">Product <span>Total</span>
+                                        </div>
+                                        <ul class="checkout__total__products">
+                                            <% for(let i=0;i<cart.Products.length;i++) { %>
+                                                <li>
+                                                    <%= cart.Products[i].ProductId.product_name %><b>
+                                                            <span>Rs <% if(cart.Products[i].ProductId.Offer){ %>
+                                                                    <% if(new Date(cart.Products[i].ProductId.Offer.startDate)<=Date.now() && new Date(cart.Products[i].ProductId.Offer.endDate)>=Date.now()) { %>
+                                                                        <%= (Math.ceil((cart.Products[i].ProductId.Price)-(cart.Products[i].ProductId.Price*cart.Products[i].ProductId.Offer.Value/100)))*cart.Products[i].Quantity %>
+                                                                            <% }else { %>
+                                                                                <%= cart.Products[i].Quantity*cart.Products[i].ProductId.Price %>
+                                                                                    <% } %>
+                                                                                        <% }else { %>
+                                                                                            <%= cart.Products[i].Quantity*cart.Products[i].ProductId.Price %>
+                                                                                                <% } %>
+                                                            </span></b>
+                                                </li>
 
-                                                    <input type="radio" id="creditcard" name="payment"
-                                                        value="Wallet" required>
-                                                    <label for="option3" class="m-2">Wallet</label><br>
-                                                    <button type="submit" class="site-btn my-4"
-                                                        style="background-color: rgb(201, 20, 89)">PLACE
-                                                        ORDER</button>
-                                                </div>
+                                                <% } %>
+                                        </ul>
+                                        <ul class="checkout__total__all">
+                                            <li>Subtotal <span>Rs <%= total %></span></li>
+                                            <% if(cart.isCoupon){ %>
+                                                <li>Discount <span>Rs <%= cart.isCoupon.discountAmount %>
+                                                    </span></li>
+                                                <% } %>
+                                                    <li>Total <span>Rs <%= discountedAmount %></span></li>
+                                        </ul>
+                                        <h5 class="order__title">PAYMENT</h5>
+                                        <input type="radio" id="cod" name="payment" value="Cash On Delivery" required>
+                                        <label for="option1" class="m-2">Cash On Delivery</label><br>
+
+                                        <input type="radio" id="gpay" name="payment" value="Online Payment" required>
+                                        <label for="option2" class="m-2">Online Payment</label><br>
+
+                                        <input type="radio" id="creditcard" name="payment" value="Wallet" required>
+                                        <label for="option3" class="m-2">Wallet</label><br>
+                                        <button type="submit" class="site-btn my-4"
+                                            style="background-color: rgb(201, 20, 89)">PLACE
+                                            ORDER</button>
+
+                                        <!-- <div id="myModal" class="modal">
+                                            <div class="modal-content">
+                                                <span class="close" onclick="closeModal()">&times;</span>
+                                                <input type="hidden" id="bannerId" name="bannerId" value="">
+                                                <h6 class="text-center pb-2" style="color: rgb(77, 76, 76);">Are you
+                                                    sure you want to continue?</h6>
+                                                <div class="d-flex justify-content-center">
+                                                    <button type="submit" class="btn btn-danger"
+                                                        id="orderbutton" onclick="confirmOrder()">Delete</button>
+                                                </div> -->
                                             </div>
                                         </div>
-                                    </form>
+                                    </div>
                                 </div>
+                            </div>
+                        </form>
+                    </div>
         </div>
     </section>
 
     <%- include('../layouts/user/footer.ejs') -%>
         <script>
-
-
-            // function deletecouponform(code) {
-            //     let data = { code: code }
-            //     $.ajax({
-            //         method: 'PUT',
-            //         url: '/removeCoupon',
-            //         data: JSON.stringify(data),
-            //         contentType: 'application/json',
-            //         success: function (response) {
-            //             if (response.success) {
-            //                 $('#reloadarea').load('/get-Checkout #reloadarea');
-            //             }
-            //         },
-            //         error: function (response) {
-            //             console.log(err);
-            //             Swal("Something went wrong!")
-            //         }
-            //     })
+            // function confirmOrderForm() {
+            //     document.getElementById('myModal').style.display = 'block';
             // }
-
-            // function applycoupon(){
-            //     let couponcode = document.getElementById('couponCode').value;
-            //     let data = { coupon: couponcode }
-            //     $.ajax({
-            //         method: 'POST',
-            //         url: '/applyCoupon',
-            //         data: data,
-                    
-            //         success: function (response) {
-            //             if (response.couponapplied) {
-            //                 document.getElementById('couponCode').value = response.code;
-            //                 $('#reloadorderArea').load('/get-checkout #reloadorderArea');
-            //             } else if (response.invalid) {
-            //                 const successMessage = $('<div>').addClass('success-message').text('Invalid Coupon');
-            //                 $('#successMessage').empty().append(successMessage);
-            //             } else if (response.used) {
-            //                 const successMessage = $('<div>').addClass('success-message').text('You have already used this coupon!');
-            //                 $('#successMessage').empty().append(successMessage);
-            //             } else if (response.expired) {
-            //                 const successMessage = $('<div>').addClass('success-message').text('Coupon is expired!!');
-            //                 $('#successMessage').empty().append(successMessage);
-            //             }
-            //         }
-            //     })
+            // function closeModal() {
+            //     const modal = document.getElementById('myModal');
+            //     modal.style.display = 'none';
             // }
+            
+
             document.getElementById('orderFormsubmit').addEventListener('submit', (e) => {
-               e.preventDefault();
-               let selectedPayment = document.querySelector('input[name="payment"]:checked').value;
-               if(selectedPayment=="Wallet" || selectedPayment=="Cash On Delivery"){
-                let confirmation = window.confirm("Are you sure to continue?");
-                if(confirmation){
+                e.preventDefault();
+                
+                let selectedPayment = document.querySelector('input[name="payment"]:checked').value;
+                if (selectedPayment == "Wallet" || selectedPayment == "Cash On Delivery") {
+                    let confirmation = window.confirm("Are you sure to continue?");
+                    // document.getElementById('myModal').style.display = 'block';
+
+                    if (confirmation) {
+                        let formdata = new FormData(document.getElementById('orderFormsubmit'));
+                        let data = {}
+                        formdata.forEach(function (value, key) {
+                            data[key] = value;
+                        });
+                        if (!data.address) {
+                            swal("Please add address!")
+                            return;
+                        }
+                        console.log(data)
+                        $.ajax({
+                            method: 'POST',
+                            url: '/submitcheckout',
+                            data: JSON.stringify(data),
+                            contentType: 'application/json',
+                            success: function (response) {
+                                if (response.walletbal == false) {
+                                    swal("Insufficient fund in wallet!");
+                                } else if (response.cod) {
+                                    window.location.href = '/orderSuccess';
+
+                                } else if (response.order) {
+                                    generateRazorpay(response.order);
+                                } else {
+                                    swal("Something went wrong!");
+                                }
+                            },
+                            error: function (err) {
+                                console.log(err);
+                            }
+                        })
+
+                    }
+                } else {
                     let formdata = new FormData(document.getElementById('orderFormsubmit'));
-                let data = {}
-                formdata.forEach(function (value, key) {
-                    data[key] = value;
-                });
-                $.ajax({
-                    method: 'POST',
-                    url: '/submitcheckout',
-                    data: JSON.stringify(data),
-                    contentType: 'application/json',
-                    success: function (response) {
-                        if(response.walletbal==false){
-                            swal("Insufficient fund in wallet!");
-                        }else if (response.cod) {
-                            window.location.href = '/orderSuccess';
-                            
-                        }else if(response.order){
-                            generateRazorpay(response.order);
-                        }else{
-                            swal("Something went wrong!");
-                        } 
-                    },
-                    error: function (err) {
-                        console.log(err);
-                    }
-                })  
-                    
+                    let data = {}
+                    formdata.forEach(function (value, key) {
+                        data[key] = value;
+                    });
+                    $.ajax({
+                        method: 'POST',
+                        url: '/submitcheckout',
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        success: function (response) {
+                            if (response.walletbal == false) {
+                                swal("Insufficient fund in wallet!");
+                            } else if (response.cod) {
+                                window.location.href = '/orderSuccess';
+
+                            } else if (response.order) {
+                                generateRazorpay(response.order);
+                            } else {
+                                swal("Something went wrong!");
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    })
                 }
-               }else {
-                let formdata = new FormData(document.getElementById('orderFormsubmit'));
-                let data = {}
-                formdata.forEach(function (value, key) {
-                    data[key] = value;
-                });
-                $.ajax({
-                    method: 'POST',
-                    url: '/submitcheckout',
-                    data: JSON.stringify(data),
-                    contentType: 'application/json',
-                    success: function (response) {
-                        if(response.walletbal==false){
-                            swal("Insufficient fund in wallet!");
-                        }else if (response.cod) {
-                            window.location.href = '/orderSuccess';
-                            
-                        }else if(response.order){
-                            generateRazorpay(response.order);
-                        }else{
-                            swal("Something went wrong!");
-                        } 
-                    },
-                    error: function (err) {
-                        console.log(err);
-                    }
-                })  
-            }      
             })
 
             function generateRazorpay(order) {
                 console.log("heyyy");
                 console.log(order);
-                console.log("OrderAmount"+order.amount);
+                console.log("OrderAmount" + order.amount);
                 var options = {
                     "key": "rzp_test_xBf0oBR72QXqNT", // Enter the Key ID generated from the Dashboard
                     "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
                     "currency": "INR",
                     "name": "Acme Corp",
                     "description": "Test Transaction",
-                    
+
                     "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-                    "handler": function ( response ) {
-                         console.log('helloooo'+order)
-                        verifyorder(response,order);
-                        
+                    "handler": function (response) {
+                        console.log('helloooo' + order)
+                        verifyorder(response, order);
+
                     },
                     "prefill": {
                         "name": "Nisana M",
@@ -282,22 +252,22 @@
                 rzp1.open();
 
             }
-            function verifyorder(payment,order){
+            function verifyorder(payment, order) {
                 console.log(order);
-              
+
                 $.ajax({
-                    method:'POST',
-                    url:'/verifyOrder',
-                    data:{
+                    method: 'POST',
+                    url: '/verifyOrder',
+                    data: {
                         payment,
                         order
                     },
-                    success:function(response){
-                        if(response.placed){
+                    success: function (response) {
+                        if (response.placed) {
                             window.location.href = '/orderSuccess';
                         }
                     },
-                    error:function(err){
+                    error: function (err) {
                         console.log(err);
                     }
                 })

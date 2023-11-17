@@ -1,0 +1,75 @@
+<%- include('../layouts/admin/header.ejs') -%>
+
+  <div class="container mt-5">
+    <div class="row justify-content-end mt-5">
+      <a href="/admin/loadAddBanner" class="btn btn-outline-primary mx-5">Add Banner</a>
+    </div>
+    <% if(banner) { %>
+      <div class="row mt-5" id="bannerpage">
+        <% for(let i=0;i<banner.length;i++) { %>
+          <div class="col-lg-4 grid-margin">
+            <div class="card" style="width: 18rem;">
+              <img src="/bannerImages/<%= banner[i].Image %>" class="card-img-top" alt="...">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <%= banner[i].Type %>
+                </h5>
+                <p class="card-text">
+                  <%= banner[i].Description %>
+                </p>
+                <a href="#" class="btn btn-secondary" onclick="confirmdeleteBanner('<%= banner[i]._id %>','<%= i %>')">Delete</a>
+
+                <div id="myModal<%= i %>" class="modal">
+                  <div class="modal-content">
+                    <span class="close" onclick="closeModal('<%= i %>')">&times;</span>
+                      <input type="hidden" id="bannerId<%= i %>" name="bannerId" value="">
+                      <h6 class="text-center pb-2" style="color: rgb(77, 76, 76);">Are you sure you want to delete?</h6>
+                      <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-danger" onclick="deleteBanner('<%= banner[i]._id %>','<%= i %>')">Delete</button>
+                      </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <% } %>
+      </div>
+      <% }else if(!banner) { %>
+        <div>
+        <h3>No Banners!</h3>
+        </div>
+        <% } %>
+  </div>
+  <%- include('../layouts/admin/footer.ejs') -%>
+
+    <script>
+      function confirmdeleteBanner(id,index) {
+        const modal = document.getElementById('myModal'+index);
+        const bannerid = document.getElementById('bannerId'+index);
+        bannerid.value = id;
+
+        modal.style.display = 'block';
+      }
+
+      function closeModal(index) {
+        const modal = document.getElementById('myModal'+index);
+        modal.style.display = 'none';
+      }
+      function deleteBanner(id,index){
+        $.ajax({
+          method:'DELETE',
+          url:`/admin/deleteBanner/${id}`,
+          success:function(response){
+            if(response.success){
+              const modal = document.getElementById('myModal'+index);
+              modal.style.display = 'none';
+              $('#bannerpage').load('/admin/banner #bannerpage');
+              swal("Banner deleted!");
+            }else if(response.error){
+              swal("Something went wrong!");
+            }
+          }
+        })
+      }
+    </script>

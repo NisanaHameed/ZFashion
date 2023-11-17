@@ -1,0 +1,66 @@
+<%- include('../layouts/admin/header.ejs') -%>
+
+<div class="container mt-5">
+    <div class="row justify-content-end mt-5">
+        <a href="/admin/loadAddOffer" class="btn btn-outline-primary mx-5">Add Offer</a>
+      </div>
+    <div class="row mt-5">
+        <div class="col-12 grid-margin">
+          <div class="card" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);">
+            <div class="card-body">
+                <% if(offer.length>0){ %>
+              <h4 class="card-title">Offers</h4>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>
+                      </th>
+                      <th> Name </th>
+                      <th> Value </th>
+                      <th> Start Date</th>                 
+                      <th> End Date </th>                
+                    </tr>
+                  </thead>
+                  <tbody>                   
+                    <% for(let i=0; i<offer.length; i++){ 
+                      %>
+                      <tr <% if(offer[i].isBlock) { %> class="text-danger" <% } %>>
+                        <td><%= i+1 %>                    
+                        </td>                    
+                        <td><%= offer[i].Name %></td>
+                        <td><%= offer[i].Value %></td>
+                        <td><%= offer[i].startDate.toLocaleDateString('en-US', { year:
+                            'numeric', month: 'short', day: '2-digit'
+                            }).replace(/\//g,'-') %></td>
+                        <td><%= offer[i].endDate.toLocaleDateString('en-US', { year:
+                            'numeric', month: 'short', day: '2-digit'
+                            }).replace(/\//g,'-') %></td>
+                            <td>
+                                <a href="/admin/getEditOffer/<%= offer[i]._id %>"><img src="/user/img/edit_1160515.png" style="width: 1.6rem;height: 1.6rem;"></a>  
+                              </td>
+                              <td>
+                                <a href="/admin/blockOffer/<%= offer[i]._id %>"><img src="/user/img/block.png" style="width: 1.6rem;height: 1.6rem;"></a>
+                              </td>
+                      </tr>
+                      <%
+                    } %>
+                   
+                  </tbody>
+                </table>              
+              </div>
+              <% } else{
+                %>
+                  <tr>
+                    <td>There are no offers now!!</td>
+                  </tr>
+                <%
+              }
+              %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<%- include('../layouts/admin/footer.ejs') -%>

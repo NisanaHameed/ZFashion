@@ -9,71 +9,77 @@ const loadCart = async (req, res) => {
         const userid = req.session.userId;
         console.log('user ' + userid)
         let total = 0;
-        const cart = await Cart.findOne({ UserId: userid }).populate('Products.ProductId').populate('isCoupon');
-        console.log(cart);
-        if(cart){
+        let discountedAmount = 0;
+        const cart = await Cart.findOne({ UserId: userid }).populate({ path: 'Products.ProductId', populate: { path: 'Offer' } }).populate('isCoupon');
+        if (cart) {
             var products = cart.Products;
-            console.log(cart)
-            console.log('total '+total);
+            console.log(products)
             products.forEach(item => {
-                total+=item.Totalprice;
+                if (item.ProductId.Offer) {
+                    if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now()) {
+                        let offerprice = Math.ceil(((item.ProductId.Price) - (item.ProductId.Price * item.ProductId.Offer.Value / 100))) * item.Quantity;
+                        total += offerprice
+                    } else {
+                        total += (item.ProductId.Price * item.Quantity);
+                    }
+                } else {
+                    total += (item.ProductId.Price * item.Quantity);
+                }
             });
-            if(cart.isCoupon){
+            let discount = total;
+            console.log('Total  ' + total)
+            if (cart.isCoupon) {
                 let date = new Date();
-                if(cart.isCoupon.criteriaAmount>cart.totalAmount || cart.isCoupon.usersLimit<=cart.isCoupon.usedUsers.length || cart.isCoupon.isBlock==true || cart.isCoupon.activationDate>date || cart.isCoupon.expiryDate<date ){
-                    await Cart.updateOne({UserId:userid},{$set:{totalAmount:total},$unset:{isCoupon:1}});
-                    
+                if (cart.isCoupon.criteriaAmount > total || cart.isCoupon.usersLimit <= cart.isCoupon.usedUsers.length || cart.isCoupon.isBlock == true || cart.isCoupon.activationDate > date || cart.isCoupon.expiryDate < date) {
+                    await Cart.updateOne({ UserId: userid }, { $unset: { isCoupon: 1 } });
+
+                } else {
+                    discount -= cart.isCoupon.discountAmount;
                 }
             }
-        }          
-            res.render('cart', { cart,total,username});
-       
-        // console.log(products);
+            discountedAmount = discount;
+        }
+
+        res.render('cart', { cart, total, discountedAmount, username });
+
     } catch (error) {
         console.log(error);
-        
+
     }
 }
 
 const addCart = async (req, res) => {
     try {
-        
+
         const userId = req.session.userId;
         if (!userId) {
             return res.json({ message: 'Please log in!!' });
         }
         let user = await User.findById(userId);
-        if(user.isBlock==true){
-            return res.json({blocked:true});
+        if (user.isBlock == true) {
+            return res.json({ blocked: true });
         }
         console.log(userId);
         const productId = req.body.productId;
         console.log(productId);
         const product = await Product.findOne({ _id: productId });
         if (product.Stock > 0) {
-                // let total = 0;
+            // let total = 0;
             const cart = await Cart.findOne({ $and: [{ UserId: userId, 'Products.ProductId': productId }] })
-            
+
             if (cart) {
 
-                return res.json({incart:true});
-                
+                return res.json({ incart: true });
+
             } else {
-                // let cartproducts = await Cart.findOne({UserId:userId});
-                // if(cart!=null && cartproducts.Products.length>0){
-                //     cartproducts.Products.forEach(item=>{
-                //         total+=item.Totalprice;
-                //     })
-                // }               
+
                 const pr = {
                     ProductId: productId,
-                    Price: product.Price,
-                    Totalprice: product.Price,
                     Quantity: 1,
-                    Size:req.body.size
+                    Size: req.body.size
                 }
                 console.log(product.Price)
-                await Cart.updateOne({ UserId: userId }, {$inc:{totalAmount:product.Price }, $push: { Products: pr } }, { upsert: true });
+                await Cart.updateOne({ UserId: userId }, { $push: { Products: pr } }, { upsert: true });
 
             }
             return res.json({ stock: true });
@@ -85,72 +91,86 @@ const addCart = async (req, res) => {
     }
 }
 
-const removeCartItem = async (req,res)=>{
-    try{
+const removeCartItem = async (req, res) => {
+    try {
         let userId = req.session.userId;
         let productId = req.body.productId;
-        let cart = await Cart.findOne({UserId:userId}).populate('isCoupon');
-        await Cart.updateOne({UserId:userId},{$pull:{'Products':{ProductId:productId}}});
-        console.log('Your cart ='+cart)
-        const removedProduct = cart.Products.filter(item=>{
-            if(item.ProductId==productId){
-                return item
-            }
-        })
+        let productprice = await Product.findById(productId)
+        const cart = await Cart.findOne({ UserId: userId }).populate('isCoupon');
+        await Cart.updateOne({ UserId: userId }, { $pull: { 'Products': { ProductId: productId } } });
         let total = 0;
-        console.log(cart);
-        cart.Products.forEach(item=>{
-            total+=item.Totalprice
+        const newCart = await Cart.findOne({ UserId: userId }).populate({ path: 'Products.ProductId', populate: { path: 'Offer' } });
+        newCart.Products.forEach(item => {
+            if (item.ProductId.Offer) {
+                if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now()) {
+                    let offerprice = Math.ceil(((item.ProductId.Price) - (item.ProductId.Price * item.ProductId.Offer.Value / 100))) * item.Quantity;
+                    console.log('offerprice' + offerprice)
+                    total += offerprice
+                } else {
+                    total += (item.ProductId.Price * item.Quantity);
+                }
+            } else {
+                total += (item.ProductId.Price * item.Quantity);
+            }
         });
-        if(cart.isCoupon){
-            if(total-removedProduct[0].Totalprice<cart.isCoupon.criteriaAmount){
-                await Cart.updateOne({UserId:userId},{$set:{totalAmount:total},$unset:{isCoupon:1}})
+        console.log('total  ' + total)
+        if (cart.isCoupon) {
+            if (total < cart.isCoupon.criteriaAmount) {
+                await Cart.updateOne({ UserId: userId }, { $unset: { isCoupon: 1 } })
             }
         }
-        await Cart.updateOne({UserId:userId},{$inc:{totalAmount:-removedProduct[0].Totalprice}});
-        res.json({success:true});
-    }catch(error){
+        res.json({ success: true });
+    } catch (error) {
         console.log(error);
     }
 }
-const updateQuantity = async (req,res)=>{
-    try{
-        
+const updateQuantity = async (req, res) => {
+    try {
+
         let userId = req.session.userId;
         console.log(userId)
-        const { productId,count } = req.body;
-        console.log('datatype'+typeof(productId))
-        const products = await Product.findOne({_id:productId});
-        const cart = await Cart.findOne({UserId:userId}).populate('isCoupon');
-        let product = cart.Products.filter(val=>{
-            if(val.ProductId==productId)
-            return val;
+        const { productId, count } = req.body;
+        console.log('datatype' + typeof (productId))
+        const products = await Product.findOne({ _id: productId });
+        const cart = await Cart.findOne({ UserId: userId }).populate('isCoupon');
+        let product = cart.Products.filter(val => {
+            if (val.ProductId == productId)
+                return val;
         })
         console.log(product);
-        if(product[0].Quantity+count>=1 && product[0].Quantity+count<=products.Stock){
-        let newTotalprice = count*(products.Price);
-        
-        await Cart.updateOne({UserId:userId,'Products.ProductId':productId},{$inc:{'Products.$.Quantity':count,'Products.$.Totalprice':newTotalprice,totalAmount:newTotalprice}});
-        
-        if(cart.isCoupon){
-           const updatedCart = await Cart.findOne({UserId:userId});
-           const totalprice = updatedCart.Products.reduce((a,item)=>{
-            return a+item.Totalprice;
-        },0);
-        console.log('Totalprice='+totalprice);
-        if(totalprice<cart.isCoupon.criteriaAmount){
-            await Cart.updateOne({UserId:userId},{$set:{totalAmount:totalprice},$unset:{isCoupon:1}});
+        if (product[0].Quantity + count >= 1 && product[0].Quantity + count <= products.Stock) {
+            await Cart.updateOne({ UserId: userId, 'Products.ProductId': productId }, { $inc: { 'Products.$.Quantity': count } });
+
+            if (cart.isCoupon) {
+                let totalprice = 0;
+                const updatedCart = await Cart.findOne({ UserId: userId }).populate({ path: 'Products.ProductId', populate: { path: 'Offer' } });
+                updatedCart.Products.forEach(item => {
+                    if (item.ProductId.Offer) {
+                        if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now()) {
+                            let offerprice = Math.ceil(((item.ProductId.Price) - (item.ProductId.Price * item.ProductId.Offer.Value / 100))) * item.Quantity;
+                            console.log('offerprice' + offerprice)
+                            totalprice += offerprice
+                        } else {
+                            totalprice += (item.ProductId.Price * item.Quantity);
+                        }
+                    } else {
+                        totalprice += (item.ProductId.Price * item.Quantity);
+                    }
+                });
+                console.log('Totalprice=' + totalprice);
+                if (totalprice < cart.isCoupon.criteriaAmount) {
+                    await Cart.updateOne({ UserId: userId }, { $unset: { isCoupon: 1 } });
+                }
+            }
+            res.json({ success: true });
+        } else {
+            if (product[0].Quantity + count <= 1) {
+                res.json({ mincount: true });
+            } else {
+                res.json({ nostock: true });
+            }
         }
-        }
-        res.json({success:true});
-    }else{
-        if(product[0].Quantity+count<=1){
-            res.json({mincount:true});
-        }else{
-            res.json({nostock:true});
-        }
-    }
-    }catch(error){
+    } catch (error) {
         console.log(error);
     }
 }

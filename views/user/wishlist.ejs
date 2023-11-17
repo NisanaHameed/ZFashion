@@ -1,35 +1,48 @@
 <%- include('../layouts/user/header.ejs') -%>
 
-<section>
-    <div class="container mt-4" id="reloadArea" style="min-height: 50rem;">
-        <div class="row" >
-            <% if(wishlist.Products.length>0) { %> 
-                <% for(let i=0;i<wishlist.Products.length;i++) { %> 
-            <div class="col-lg-3 col-md-4 mb-4">
-                <div class="card"  style="width: 14rem;">
-                    <img src="/userImages/<%= wishlist.Products[i].ProductId.Image.image1 %>"  style="height: 19rem;" class="card-img-top" alt="image">
-                    <a onclick="removefromWishlist('<%= wishlist.Products[i].ProductId._id %>')"><img src="/user/img/close.png" style="position: absolute; width: 1rem; top:10px ;right:15px"></a>
-                    <div class="card-body text-center">
-                      <p><%= wishlist.Products[i].ProductId.product_name %></p>
-                      <p class="text-success"><b>Rs <%= wishlist.Products[i].ProductId.Price %></b></p>
-                      <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
-                      <% if(wishlist.Products[i].ProductId.Stock>0) { %> 
-                      <a onclick="movetoCart('<%= wishlist.Products[i].ProductId._id %>')" class="btn" style="background-color: rgb(217, 217, 217);">MOVE TO CART</a>
-                      <% }else { %> 
-                        <a class="btn text-danger">Out Of Stock</a>
-                        <% } %>
-                    </div>
-                  </div>
-            </div>
-            <% } %>
-            <% } else { %>
-                <div class="col-6 mt-5">
-                <h4 style="color: rgb(184, 13, 104);">Your wishlist is empty!!</h4>
-            </div>
-                 <% } %>
-        
-    </div>
-</section>
+    <section>
+        <div class="container mt-4" id="reloadArea" style="min-height: 50rem;">
+            <div class="row">
+                <% if(wishlist) { %>
+                    <% if(wishlist.Products.length>0) { %>
+                        <% for(let i=0;i<wishlist.Products.length;i++) { %>
+                            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                                <div class="card" style="width: 14rem;">
+                                    <img src="/userImages/<%= wishlist.Products[i].ProductId.Image.image1 %>"
+                                        style="height: 19rem;" class="card-img-top" alt="image">
+                                    <a onclick="removefromWishlist('<%= wishlist.Products[i].ProductId._id %>')"><img
+                                            src="/user/img/close.png"
+                                            style="position: absolute; width: 1rem; top:10px ;right:15px"></a>
+                                    <div class="card-body text-center">
+                                        <p>
+                                            <%= wishlist.Products[i].ProductId.product_name %>
+                                        </p>
+                                        <p class="text-success"><b>Rs <%= wishlist.Products[i].ProductId.Price %></b>
+                                        </p>
+                                        <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+                                        <% if(wishlist.Products[i].ProductId.Stock>0) { %>
+                                            <a onclick="movetoCart('<%= wishlist.Products[i].ProductId._id %>')"
+                                                class="btn" style="background-color: rgb(217, 217, 217);">MOVE TO
+                                                CART</a>
+                                            <% }else { %>
+                                                <a class="btn text-danger">Out Of Stock</a>
+                                                <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                            <% } %>
+                                <% } else { %>
+                                    <div class="col-6 mt-5">
+                                        <h4 style="color: rgb(184, 13, 104);">Your wishlist is empty!!</h4>
+                                    </div>
+                                    <% } %>
+                                        <% }else { %>
+                                            <div class="col-6 mt-5">
+                                                <h4 style="color: rgb(184, 13, 104);">Your wishlist is empty!!</h4>
+                                            </div>
+                                            <% } %>
 
-<%- include('../layouts/user/footer.ejs') -%>
+            </div>
+    </section>
 
+    <%- include('../layouts/user/footer.ejs') -%>

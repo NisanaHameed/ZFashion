@@ -11,28 +11,16 @@ const cartSchema = mongoose.Schema({
             type:String,           
             ref:'Product'
         },
-        Price:{
-            type:Number,
-            
-        },
         Quantity:{
             type:Number,
             dafault:1,
             required:true
-        },
-        Totalprice:{
-            type:Number,
-            default:0
         },
         Size:{
             type:String
         }
     }
     ],
-    totalAmount:{
-        type:Number,
-        default:0
-    },
     isCoupon:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Coupon'

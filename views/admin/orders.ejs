@@ -24,7 +24,7 @@
                 <% for(let i=0;i<order.length;i++) { %> 
                 <tr>
                   <td><%= order[i].UserId.name %></td>
-                  <td> <%= order[i]._id %> </td>
+                  <td> <%= order[i].OrderId %> </td>
                   <td> <%= order[i].totalAmount %> </td>
                   <td> <%= order[i].paymentMethod %> </td>
                   <td> <%= order[i].Date.toISOString().split('T')[0] %> </td>

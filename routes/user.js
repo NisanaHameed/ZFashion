@@ -73,6 +73,8 @@ router.get('/wallet',userAuth,walletController.getWallet);
 router.post('/productRating',rateController.productRating);
 router.post('/submitProductReview',rateController.submitproductReview);
 
+router.get('/contact',userController.getContact);
+
 router.get('/logOut',userAuth,userController.logout);
 
 module.exports = router;

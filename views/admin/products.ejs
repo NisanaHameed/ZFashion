@@ -17,12 +17,12 @@
     </ul>
     <ul class="navbar-nav navbar-nav-right">
      
-      <li class="nav-item nav-settings d-none d-lg-block">
+      <!-- <li class="nav-item nav-settings d-none d-lg-block">
         <a class="nav-link" href="#">
           <i class="mdi mdi-view-grid"></i>
         </a>
-      </li>
-      <li class="nav-item dropdown border-left">
+      </li> -->
+      <!-- <li class="nav-item dropdown border-left">
         <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
           <i class="mdi mdi-email"></i>
           <span class="count bg-success"></span>
@@ -62,8 +62,8 @@
           <div class="dropdown-divider"></div>
           <p class="p-3 mb-0 text-center">4 new messages</p>
         </div>
-      </li>
-      <li class="nav-item dropdown border-left">
+      </li> -->
+      <!-- <li class="nav-item dropdown border-left">
         <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
           <i class="mdi mdi-bell"></i>
           <span class="count bg-danger"></span>
@@ -109,7 +109,7 @@
           <div class="dropdown-divider"></div>
           <p class="p-3 mb-0 text-center">See all notifications</p>
         </div>
-      </li>
+      </li> -->
       <li class="nav-item dropdown">
         <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
           <div class="navbar-profile">
@@ -173,7 +173,8 @@
                   <th> Category </th>                
                   <th> Price </th>
                   <th> Quantity </th>
-                  <th> Stock </th>
+                  <!-- <th> Stock </th> -->
+                  <th> Offer </th>
                   <th> Action</th>
                 </tr>
               </thead>
@@ -187,15 +188,18 @@
                       <td> <%= products[i].product_name %> </td>
                       <td> <%= products[i].Category %></td>
                       <td> <%= products[i].Price %> </td>
-                      <td> <%= products[i].Stock %> </td>
+                      <!-- <td> <%= products[i].Stock %> </td> -->
                        <% if(products[i].Stock>0) { %>
-                        <td class="text-success">Stock In</td>
+                        <td><%= products[i].Stock %></td>
                         <% }else { %> 
-                          <td class="text-danger">Stock Out</td> 
+                          <td class="text-danger">No Stock</td> 
                           <% } %> 
+                      <td><% if(products[i].Offer){ %>
+                        <%= products[i].Offer.Name %>
+                         <% } %></td>    
                       <td>
-                        <a class="mx-2" href="/admin/updateProduct/<%= products[i]._id %>"><img src="/user/img/pencil_7904963.png" style="width: 1.5rem; height: 1.5rem;"></a>
-                        <a class="mx-2" href="javascript:void(0)" onclick="confirmDelete('<%= products[i]._id %>')"><img src="/user/img/delete_6861362.png" style="width: 1.5rem; height: 1.5rem;"></a>
+                        <a class="mx-2" href="/admin/updateProduct/<%= products[i]._id %>"><img src="/user/img/edit_1160515.png" style="width: 1.6rem;height: 1.6rem;"></a>
+                        <a class="mx-2" href="javascript:void(0)" onclick="confirmDelete('<%= products[i]._id %>')"><img src="/user/img/remove_7695661.png" style="width: 1.6rem;height: 1.6rem;"></a>
                       </td>
                     </tr>
                     <% } %>
