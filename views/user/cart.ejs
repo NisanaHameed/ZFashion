@@ -53,7 +53,7 @@
                                                         <%= cart.Products[i].ProductId.Price %>
                                                     </h5> -->
                                                     <% if(cart.Products[i].ProductId.Offer){ %> 
-                                                        <% if(new Date(cart.Products[i].ProductId.Offer.startDate)<=Date.now() && new Date(cart.Products[i].ProductId.Offer.endDate)>=Date.now()) { %> 
+                                                        <% if(new Date(cart.Products[i].ProductId.Offer.startDate)<=Date.now() && new Date(cart.Products[i].ProductId.Offer.endDate)>=Date.now() && cart.Products[i].ProductId.Offer.isBlock==false) { %> 
                                                     <h6 class="pt-2"> <del>Rs <%= cart.Products[i].ProductId.Price %></del><span class="ml-2 text-success">Rs <%= Math.ceil((cart.Products[i].ProductId.Price)-(cart.Products[i].ProductId.Price*cart.Products[i].ProductId.Offer.Value/100)) %></span></h6> 
                                                     <% }else { %>
                                                         <h6 class="pt-2">Rs <%= cart.Products[i].ProductId.Price %></h6>
@@ -77,7 +77,7 @@
                                             <td class="cart__price">
                                                 <!-- <%= cart.Products[i].Quantity*cart.Products[i].ProductId.Price %> -->
                                                 <% if(cart.Products[i].ProductId.Offer){ %>
-                                                    <% if(new Date(cart.Products[i].ProductId.Offer.startDate)<=Date.now() && new Date(cart.Products[i].ProductId.Offer.endDate)>=Date.now()) { %>
+                                                    <% if(new Date(cart.Products[i].ProductId.Offer.startDate)<=Date.now() && new Date(cart.Products[i].ProductId.Offer.endDate)>=Date.now() && cart.Products[i].ProductId.Offer.isBlock==false) { %>
                                                         <%= (Math.ceil((cart.Products[i].ProductId.Price)-(cart.Products[i].ProductId.Price*cart.Products[i].ProductId.Offer.Value/100)))*cart.Products[i].Quantity %>
                                                         <% }else { %>
                                                             <%= cart.Products[i].Quantity*cart.Products[i].ProductId.Price %>

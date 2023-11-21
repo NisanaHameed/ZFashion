@@ -155,10 +155,19 @@
                 
                 let selectedPayment = document.querySelector('input[name="payment"]:checked').value;
                 if (selectedPayment == "Wallet" || selectedPayment == "Cash On Delivery") {
-                    let confirmation = window.confirm("Are you sure to continue?");
+                    // let confirmation = window.confirm("Are you sure to continue?");
                     // document.getElementById('myModal').style.display = 'block';
-
-                    if (confirmation) {
+                    swal({
+                title: "Are you sure?",
+                // text: "You won't be able to revert this!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, proceed!",
+            }).then(function (result) { 
+                if (result.value) {
+                    
                         let formdata = new FormData(document.getElementById('orderFormsubmit'));
                         let data = {}
                         formdata.forEach(function (value, key) {
@@ -192,6 +201,7 @@
                         })
 
                     }
+                })
                 } else {
                     let formdata = new FormData(document.getElementById('orderFormsubmit'));
                     let data = {}

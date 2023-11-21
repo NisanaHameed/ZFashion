@@ -4,6 +4,10 @@ const categorySchema = mongoose.Schema({
     name:{
         type:String,
         required:true
+    },
+    Offer:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'CategoryOffer'
     }
 });
 

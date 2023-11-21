@@ -179,8 +179,6 @@ const loadShop = async (req, res) => {
             findBrand = brands;
         }
         let search = req.query.search || "";
-        console.log("Datatype" + typeof (findCategory));
-        console.log("Datatype" + typeof (findBrand));
         let sort = req.query.sort;
         let sortProduct;
         if (sort == 1) {

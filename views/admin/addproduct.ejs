@@ -1,7 +1,7 @@
 <%- include('../layouts/admin/header.ejs') -%>
 
     <div class="container mt-5">
-        <div class="row">
+        <div class="row mt-5">
             <div class="col-12 grid-margin stretch-card">
                 <div class="card" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);">
                     <div class="card-body">
@@ -40,13 +40,13 @@
                                 <label for="categoryDropdown">Offer</label>
                                 <select class="form-control text-white" id="categoryDropdown" name="offer">
                                     <option value="">Select Offer</option>
-                                    <% if(offer){ %> 
-                                    <% offer.forEach(ofr=> { %>
-                                        <option value="<%= ofr._id %>">
-                                            <%= ofr.Name %>
-                                        </option>
-                                        <% }); %>
-                                        <% } %>
+                                    <% if(offer){ %>
+                                        <% offer.forEach(ofr=> { %>
+                                            <option value="<%= ofr._id %>">
+                                                <%= ofr.Name %>
+                                            </option>
+                                            <% }); %>
+                                                <% } %>
                                 </select>
                             </div>
 
@@ -91,22 +91,26 @@
 
                                 <div class="form-group col-md-3">
                                     <input type="file" class="form-control" id="imageUpload1" name="image1"
-                                        accept="image/*">
+                                        accept="image/*" onchange="previewImage(1)">
+                                    <div style="margin: 0 auto; text-align: center;" id="image1"></div>
                                 </div>
 
                                 <div class="form-group col-md-3">
                                     <input type="file" class="form-control" id="imageUpload2" name="image2"
-                                        accept="image/*">
+                                        accept="image/*" onchange="previewImage(2)">
+                                    <div style="margin: 0 auto; text-align: center;" id="image2"></div>
                                 </div>
 
                                 <div class="form-group col-md-3">
                                     <input type="file" class="form-control" id="imageUpload3" name="image3"
-                                        accept="image/*">
+                                        accept="image/*" onchange="previewImage(3)">
+                                    <div style="margin: 0 auto; text-align: center;" id="image3"></div>
                                 </div>
 
                                 <div class="form-group col-md-3">
                                     <input type="file" class="form-control" id="imageUpload4" name="image4"
-                                        accept="image/*">
+                                        accept="image/*" onchange="previewImage(4)">
+                                    <div style="margin: 0 auto; text-align: center;" id="image4"></div>
                                 </div>
                             </div>
 
@@ -130,6 +134,23 @@
     <%- include('../layouts/admin/footer.ejs') -%>
 
         <script>
+
+            function previewImage(index) {
+                let imageUpload = document.getElementById('imageUpload' + index);
+                let preview = document.getElementById('image' + index);
+                preview.innerHTML = "";
+                if (imageUpload.files && imageUpload.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        var img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.alt = 'Image Preview';
+                        img.style.width = '10rem';
+                        preview.appendChild(img);
+                    };
+                    reader.readAsDataURL(imageUpload.files[0]);
+                }
+            }
             document.getElementById('addProductForm').addEventListener('submit', (e) => {
                 e.preventDefault();
 

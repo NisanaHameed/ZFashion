@@ -135,7 +135,7 @@
                                     
                                     <h6 class="mt-3"><%= product[i].product_name %></h6>
                                     <% if(product[i].Offer){ %> 
-                                        <% if(new Date(product[i].Offer.startDate)<=Date.now() && new Date(product[i].Offer.endDate)>=Date.now()) { %> 
+                                        <% if(new Date(product[i].Offer.startDate)<=Date.now() && new Date(product[i].Offer.endDate)>=Date.now() && product[i].Offer.isBlock==false) { %> 
                                     <h6 class="pt-2"><b> <del>Rs <%= product[i].Price %></del><span class="ml-2 text-success">Rs <%= Math.ceil((product[i].Price)-(product[i].Price*product[i].Offer.Value/100)) %></span></b></h6> 
                                     <% }else { %>
                                         <h6 class="pt-2"><b>Rs <%= product[i].Price %></b></h6>

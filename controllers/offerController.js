@@ -1,5 +1,6 @@
 const express = require('express');
 const Offer = require('../models/offerModel');
+const Category = require('../models/categoryModel');
 
 const getOffer = async (req, res) => {
     try {
@@ -79,6 +80,8 @@ const editOffer = async (req, res) => {
         res.status(500).send(err);
     }
 }
+
+
 
 module.exports = {
     getOffer,

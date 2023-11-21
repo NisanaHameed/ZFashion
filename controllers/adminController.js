@@ -1,10 +1,9 @@
 var express = require('express');
 const user = require('../models/userModel');
 const bcrypt = require('bcrypt');
-const multer = require('multer');
 const Order = require('../models/orderModel');
 const User = require('../models/userModel');
-
+const Papa = require('papaparse');
 
 const loadLogin = (req, res) => {
     try {
@@ -47,7 +46,7 @@ const loadDashboard = async (req, res) => {
             return `${date.getDate()} ${date.toLocaleString('default', { month: 'short' })}`;
         });
         const seriesData = orders.map(order => order.totalAmount);
-        let totalUsers = await User.countDocuments();
+        let totalUsers = await User.find({role:'user'}).countDocuments();
         let blockedUsers = await User.countDocuments({ isBlock: true });
         let cancelledOrder = await Order.countDocuments({ Status: "Cancelled" });
         let returnedOrder = await Order.countDocuments({ Status: "Returned" });
@@ -83,10 +82,10 @@ const loadDashboard = async (req, res) => {
             }
         ]);
         console.log(orderStats)
-        let orderPayment = orderStats.map(val=>{
+        let orderPayment = orderStats.map(val => {
             return val._id;
         })
-        let paymentCount = orderStats.map(val=>{
+        let paymentCount = orderStats.map(val => {
             return val.count;
         })
         console.log(orderPayment)
@@ -101,8 +100,8 @@ const loadDashboard = async (req, res) => {
             totalRefund: refund[0].totalRefund,
             cancelledOrder,
             returnedOrder,
-            orderPayment:JSON.stringify(orderPayment),
-            paymentCount:JSON.stringify(paymentCount)
+            orderPayment: JSON.stringify(orderPayment),
+            paymentCount: JSON.stringify(paymentCount)
         });
     } catch (err) {
         console.log(err);
@@ -142,6 +141,93 @@ const blockUser = async (req, res) => {
     }
 }
 
+const getSalesReport = async (req, res) => {
+    try {
+        let startDate = req.query.startDate;
+        let endDate = req.query.endDate;
+        console.log(startDate)
+        const Report = await Order.aggregate([
+            {
+                $unwind: "$Products"
+            },
+            {
+                $group: {
+                    _id: "$Products.ProductId",
+                    totalSales: { $sum: "$Products.Quantity" },
+                    totalAmount: { $sum: "$Products.Totalprice" },
+                    Date:  { $max: "$Date" } 
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    totalSales: 1,
+                    totalAmount: 1,
+                    Date: 1
+                }
+            }
+        ])
+        let salesReport = await Order.populate(Report, { path: '_id', model: 'Product' });
+        if (startDate && endDate) {
+            salesReport = salesReport.filter(val => {
+                if (new Date(startDate) <= new Date(val.Date) && new Date(endDate) >= new Date(val.Date)) {
+                    return val;
+                }
+            })
+            console.log('result' + salesReport);
+        }
+
+        res.render('salesReport', { salesReport });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+}
+
+// const downloadSalesReport = async (req,res)=>{
+//     try{
+//         let startDate = req.query.startDate;
+//         let endDate = req.query.endDate;
+//         const Report = await Order.aggregate([
+//             {
+//                 $unwind: "$Products"
+//             },
+//             {
+//                 $group: {
+//                     _id: "$Products.ProductId",
+//                     totalSales: { $sum: "$Products.Quantity" },
+//                     totalAmount: { $sum: "$Products.Totalprice" },
+//                     Date:  { $max: "$Date" } 
+//                 }
+//             },
+//             {
+//                 $project: {
+                  
+//                     totalSales: 1,
+//                     totalAmount: 1,
+//                     Date: { $dateToString: { format: "%Y-%m-%d", date: "$Date" } }
+//                 }
+//             }
+//         ])
+//         let salesReport = await Order.populate(Report, { path: '_id', model: 'Product' });
+//         if (startDate && endDate) {
+//             salesReport = salesReport.filter(val => {
+//                 if (new Date(startDate) <= new Date(val.Date) && new Date(endDate) >= new Date(val.Date)) {
+//                     return val;
+//                 }
+//             })
+//         }
+//         const csv = Papa.unparse(salesReport);
+//         res.header('Content-Type','text/csv');
+//         res.attachment('sales_report.csv');
+//         res.send(csv);
+        
+//     }catch(err){
+//         console.log(err);
+//         res.status(500).send(err);
+//     }
+// }
+
 
 const adminLogout = async (req, res) => {
     try {
@@ -158,5 +244,7 @@ module.exports = {
     registerLogin,
     loadUsers,
     blockUser,
+    getSalesReport,
+    // downloadSalesReport,
     adminLogout,
 }

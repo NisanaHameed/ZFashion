@@ -1,6 +1,6 @@
 <%- include('../layouts/admin/header.ejs') -%>
 
-<div class="container" >
+<div class="container mt-5" >
 <div class="row mt-5">
     <div class="col-12 grid-margin">
       <div class="card" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);">
@@ -57,7 +57,7 @@
                   <% } %>
                 </td>
                   <td>
-                    <a class="btn btn-outline-info" href="/admin/orderDetails/<%= order[i]._id %>">View Details</a>
+                    <a class="btn btn-outline-info" style="font-size: smaller;" href="/admin/orderDetails/<%= order[i]._id %>">View Details</a>
                   </td>
                 </tr>
                 <% } %>

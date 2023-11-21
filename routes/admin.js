@@ -11,6 +11,7 @@ const orderController = require('../controllers/orderController');
 const couponController = require('../controllers/couponController');
 const bannerController = require('../controllers/bannerController');
 const offerController = require('../controllers/offerController');
+const categoryOfferController = require('../controllers/categoryOfferController');
 const {adminAuth, userAuth} = require('../middleware/authMiddleware');
 const multerMiddleware = require('../middleware/multerMiddleware');
 
@@ -58,6 +59,16 @@ router.post('/addOffer',offerController.addOffer);
 router.get('/blockOffer/:id',adminAuth,offerController.blockOffer);
 router.get('/getEditOffer/:id',adminAuth,offerController.getEditOffer);
 router.post('/editOffer/:id',offerController.editOffer);
+
+router.get('/categoryOffer',adminAuth,categoryOfferController.loadCategoryOffer);
+router.get('/loadAddCategoryOffer',adminAuth,categoryOfferController.loadAddCategoryOffer);
+router.post('/addCategoryOffer',categoryOfferController.addCategoryOffer);
+router.get('/getEditCategoryOffer/:id',adminAuth,categoryOfferController.getEditCategoryOffer);
+router.post('/editCategoryOffer/:id',categoryOfferController.editCategoryOffer);
+router.get('/blockCategoryOffer/:id',adminAuth,categoryOfferController.blockCategoryOffer);
+
+router.get('/salesReport',adminAuth,adminController.getSalesReport);
+router.get('/downloadSalesReport',adminAuth,adminController.downloadSalesReport);
 
 router.get('/logout',adminController.adminLogout);
 

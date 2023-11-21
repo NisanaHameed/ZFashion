@@ -5,7 +5,7 @@
                 <div class="card" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);">
                     <div class="card-body">
                         <h4 class="card-title pb-5">Add Offer</h4>
-                        <form class="forms-sample" method="post" id="addofferform">
+                        <form class="forms-sample" method="post" id="addcategoryofferform">
                             <div class="form-group">
                                 <label>Name</label>
                                 <input type="text" class="form-control" name="name" id="name">
@@ -13,6 +13,18 @@
                             <div class="form-group">
                                 <label>Value</label>
                                 <input type="Number" class="form-control" name="value" id="value">
+                            </div>
+                            <div class="form-group">
+                                <label for="categoryDropdown">Category</label>
+                                <select class="form-control " id="categoryDropdown" name="category" required>
+                                    <option value="">Select a category</option>
+                                    <% category.forEach(cat=> { %>
+                                        <option>
+                                            <%= cat.name %>
+                                        </option>
+                                        <% }); %>
+
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label>Start Date</label>
@@ -33,7 +45,7 @@
 
     <%- include('../layouts/admin/footer.ejs') -%>
         <script>
-            document.getElementById('addofferform').addEventListener('submit', (e) => {
+            document.getElementById('addcategoryofferform').addEventListener('submit', (e) => {
                 e.preventDefault();
                 let name = document.getElementById('name').value.trim();
                 let value = document.getElementById('value').value.trim();
@@ -45,38 +57,38 @@
                 if (name == "") {
                     error.innerText = "Enter Offername";
                     valid = false;
-                } else if (value == "" || value<0) {
+                } else if (value == "" || value < 0) {
                     error.innerText = "Enter valid value";
                     valid = false;
-                } else if (startdate == "" ) {
+                } else if (startdate == "") {
                     error.innerText = "Enter valid Start Date";
                     valid = false;
-                }else if (enddate == "" || new Date(startdate)>new Date(enddate)) {
+                } else if (enddate == "" || new Date(startdate) > new Date(enddate)) {
                     error.innerText = "Enter valid End Date";
                     valid = false;
                 }
                 if (valid == true) {
-                    addOfferr();
+                    addCategoryOfferr();
                 }
             })
 
-            function addOfferr() {
+            function addCategoryOfferr() {
                 console.log("heyyyyyyyyyyy")
-                let form = document.getElementById('addofferform');
+                let form = document.getElementById('addcategoryofferform');
                 let formdata = $('form').serialize();
                 console.log(formdata)
                 $.ajax({
                     method: 'POST',
-                    url: '/admin/addOffer',
+                    url: '/admin/addCategoryOffer',
                     data: formdata,
                     success: function (response) {
                         if (response.success) {
                             swal("Offer added!");
                             setTimeout(() => {
-                                window.location.href = '/admin/offer'
+                                window.location.href = '/admin/categoryOffer'
                             }, 1500)
-                        } else if (response.error) {
-                            swal("Something went wrong!")
+                        } else if (response.categoryexist) {
+                            swal("This category already has an offer!")
                         }
                     },
                     error: function (err) {

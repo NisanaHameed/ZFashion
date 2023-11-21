@@ -24,7 +24,7 @@ const getCheckOut = async (req, res) => {
         var products = cart.Products;
         products.forEach(item => {
             if (item.ProductId.Offer) {
-                if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now()) {
+                if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now() && item.ProductId.Offer.isBlock==false) {
                     let offerprice = Math.ceil(((item.ProductId.Price) - (item.ProductId.Price * item.ProductId.Offer.Value / 100))) * item.Quantity;
                     total += offerprice
                 } else {
@@ -53,13 +53,12 @@ function generateUniqueID() {
 }
 
 const checkOut = async (req, res) => {
-    console.log('this is checkout')
     let user = req.session.userId;
     let cart = await Cart.findOne({ UserId: user }).populate({ path: 'Products.ProductId', populate: { path: 'Offer' } }).populate('isCoupon');
     let totalamount = 0;
     cart.Products.forEach(item => {
         if (item.ProductId.Offer) {
-            if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now()) {
+            if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now() && item.ProductId.Offer.isBlock==false) {
                 let offerprice = Math.ceil(((item.ProductId.Price) - (item.ProductId.Price * item.ProductId.Offer.Value / 100))) * item.Quantity;
                 console.log('offerprice' + offerprice)
                 totalamount += offerprice
@@ -109,7 +108,7 @@ const checkOut = async (req, res) => {
                 stocks.push(c);
                 let productPrice = products[i].ProductId.Price;
                 if(products[i].ProductId.Offer){
-                    if(new Date(products[i].ProductId.Offer.startDate) <= Date.now() && new Date(products[i].ProductId.Offer.endDate) >= Date.now()){
+                    if(new Date(products[i].ProductId.Offer.startDate) <= Date.now() && new Date(products[i].ProductId.Offer.endDate) >= Date.now() && products[i].ProductId.Offer.isBlock==false){
                         productPrice = Math.ceil(((products[i].ProductId.Price) - (products[i].ProductId.Price * products[i].ProductId.Offer.Value / 100)));
                     }        
                 }
