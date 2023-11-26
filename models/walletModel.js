@@ -16,6 +16,9 @@ const walletSchema = mongoose.Schema({
                 type:Number,
                 default:0
             },
+            Description:{
+                type:String
+            },
             Date:{
                 type:Date,
             }

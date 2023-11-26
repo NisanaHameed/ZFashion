@@ -1,5 +1,4 @@
 const express = require('express');
-const Cart = require('../models/cartModel');
 const Product = require('../models/productModel');
 const User = require('../models/userModel');
 
@@ -10,7 +9,7 @@ const loadCart = async (req, res) => {
         console.log('user ' + userid)
         let total = 0;
         let discountedAmount = 0;
-        const cart = await Cart.findOne({ UserId: userid }).populate({ path: 'Products.ProductId', populate: { path: 'Offer' } }).populate('isCoupon');
+        const cart = await User.findOne({ _id: userid }).populate({ path: 'Products.ProductId', populate: { path: 'Offer' } }).populate('isCoupon');
         if (cart) {
             var products = cart.Products;
             console.log(products)
@@ -31,7 +30,7 @@ const loadCart = async (req, res) => {
             if (cart.isCoupon) {
                 let date = new Date();
                 if (cart.isCoupon.criteriaAmount > total || cart.isCoupon.usersLimit <= cart.isCoupon.usedUsers.length || cart.isCoupon.isBlock == true || cart.isCoupon.activationDate > date || cart.isCoupon.expiryDate < date) {
-                    await Cart.updateOne({ UserId: userid }, { $unset: { isCoupon: 1 } });
+                    await User.updateOne({ _id: userid }, { $unset: { isCoupon: 1 } });
 
                 } else {
                     discount -= cart.isCoupon.discountAmount;
@@ -65,7 +64,7 @@ const addCart = async (req, res) => {
         const product = await Product.findOne({ _id: productId });
         if (product.Stock > 0) {
             // let total = 0;
-            const cart = await Cart.findOne({ $and: [{ UserId: userId, 'Products.ProductId': productId }] })
+            const cart = await User.findOne({ $and: [{ _id: userId, 'Products.ProductId': productId }] })
 
             if (cart) {
 
@@ -79,7 +78,7 @@ const addCart = async (req, res) => {
                     Size: req.body.size
                 }
                 console.log(product.Price)
-                await Cart.updateOne({ UserId: userId }, { $push: { Products: pr } }, { upsert: true });
+                await User.updateOne({ _id: userId }, { $push: { Products: pr } });
 
             }
             return res.json({ stock: true });
@@ -96,10 +95,10 @@ const removeCartItem = async (req, res) => {
         let userId = req.session.userId;
         let productId = req.body.productId;
         let productprice = await Product.findById(productId)
-        const cart = await Cart.findOne({ UserId: userId }).populate('isCoupon');
-        await Cart.updateOne({ UserId: userId }, { $pull: { 'Products': { ProductId: productId } } });
+        const cart = await User.findOne({ _id: userId }).populate('isCoupon');
+        await User.updateOne({ _id: userId }, { $pull: { 'Products': { ProductId: productId } } });
         let total = 0;
-        const newCart = await Cart.findOne({ UserId: userId }).populate({ path: 'Products.ProductId', populate: { path: 'Offer' } });
+        const newCart = await User.findOne({ _id: userId }).populate({ path: 'Products.ProductId', populate: { path: 'Offer' } });
         newCart.Products.forEach(item => {
             if (item.ProductId.Offer) {
                 if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now() && item.ProductId.Offer.isBlock==false) {
@@ -116,7 +115,7 @@ const removeCartItem = async (req, res) => {
         console.log('total  ' + total)
         if (cart.isCoupon) {
             if (total < cart.isCoupon.criteriaAmount) {
-                await Cart.updateOne({ UserId: userId }, { $unset: { isCoupon: 1 } })
+                await User.updateOne({ _id: userId }, { $unset: { isCoupon: 1 } })
             }
         }
         res.json({ success: true });
@@ -132,18 +131,18 @@ const updateQuantity = async (req, res) => {
         const { productId, count } = req.body;
         console.log('datatype' + typeof (productId))
         const products = await Product.findOne({ _id: productId });
-        const cart = await Cart.findOne({ UserId: userId }).populate('isCoupon');
+        const cart = await User.findOne({ _id: userId }).populate('isCoupon');
         let product = cart.Products.filter(val => {
             if (val.ProductId == productId)
                 return val;
         })
         console.log(product);
         if (product[0].Quantity + count >= 1 && product[0].Quantity + count <= products.Stock) {
-            await Cart.updateOne({ UserId: userId, 'Products.ProductId': productId }, { $inc: { 'Products.$.Quantity': count } });
+            await User.updateOne({ _id: userId, 'Products.ProductId': productId }, { $inc: { 'Products.$.Quantity': count } });
 
             if (cart.isCoupon) {
                 let totalprice = 0;
-                const updatedCart = await Cart.findOne({ UserId: userId }).populate({ path: 'Products.ProductId', populate: { path: 'Offer' } });
+                const updatedCart = await User.findOne({ _id: userId }).populate({ path: 'Products.ProductId', populate: { path: 'Offer' } });
                 updatedCart.Products.forEach(item => {
                     if (item.ProductId.Offer) {
                         if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now() && item.ProductId.Offer.isBlock==false) {
@@ -159,7 +158,7 @@ const updateQuantity = async (req, res) => {
                 });
                 console.log('Totalprice=' + totalprice);
                 if (totalprice < cart.isCoupon.criteriaAmount) {
-                    await Cart.updateOne({ UserId: userId }, { $unset: { isCoupon: 1 } });
+                    await User.updateOne({ _id: userId }, { $unset: { isCoupon: 1 } });
                 }
             }
             res.json({ success: true });

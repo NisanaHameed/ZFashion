@@ -9,7 +9,7 @@
     </div>
     <div class="ml-2">
         <h6><b>TRANSACTION DETAILS</b></h6>
-        <ul class="wallethistory pt-4" style="width: 25rem;font-size: 1.08rem;">
+        <ul class="wallethistory pt-4" style="width: 30rem;font-size: 1.0rem;">
             <% for(let i=0;i<wallet.Transaction.length;i++){ %>
                 <li class="mb-2 p-2" style="background-color: rgb(251, 246, 239);">
                     <% if(wallet.Transaction[i].Amount<0) { %> 
@@ -17,7 +17,7 @@
                         <% }else { %> 
                             <span class="text-success">+<%= wallet.Transaction[i].Amount %></span>
                             <% } %>
-                   
+                   <span><%= wallet.Transaction[i].Description %></span>
                     <span><%= wallet.Transaction[i].Date.toLocaleDateString('en-US', { year:
                     'numeric', month: 'short', day: '2-digit'
                     }).replace(/\//g, '-') %></span>
@@ -25,7 +25,12 @@
            <% } %>           
         </ul>
     </div>
-    <% } %>
+    <% } else{ %>
+        <div class="mx-2 my-5">
+            <h5 class="mb-3">BALANCE</h5>
+            <h3 class="text-success"><b>Rs 0.00</b></h3>
+        </div>
+         <% } %>
 </div>
 
 </section>

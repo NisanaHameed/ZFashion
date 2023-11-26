@@ -8,7 +8,7 @@ const Rate = require('../models/rateModel');
 
 const loadProducts = async (req, res) => {
     const pageNum = req.query.page;
-    const perPage = 6;
+    const perPage = 5;
     const page = '/';
     try {
         let docCount = await Product.find().countDocuments();

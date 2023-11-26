@@ -1,12 +1,8 @@
 
 function addtoCart(productId){
-     // Get the selected size
      const selectedSize = document.querySelector('input[name="size"]:checked');
 
-     // Check if a size is selected
-     if (!selectedSize) {
-         // Display an error message or handle the case where no size is selected
-        //  alert('Please select a size before adding to cart');
+     if (!selectedSize) {        
         document.getElementById('selectsizeerror').innerText = "Select a size"
          return;
      }
@@ -77,27 +73,6 @@ function updateQuantity(productId, count) {
         }
     })
 }
-// function incrementQuantity(productId) {
-//     const inputField = document.getElementById('quantity_' + productId);
-//     const currentQuantity = parseInt(inputField.value);
-
-//     const newQuantity = currentQuantity + 1;
-
-//     inputField.value = newQuantity;
-
-//     updateQuantity(productId, newQuantity);
-// }
-
-// function decrementQuantity(productId) {
-//     const inputField = document.getElementById('quantity_' + productId);
-//     const currentQuantity = parseInt(inputField.value);
-
-//     const newQuantity = currentQuantity > 1 ? currentQuantity - 1 : 1;
-
-//     inputField.value = newQuantity;
-
-//     updateQuantity(productId, newQuantity);
-// }
 
 // For wishlist
 function movetoCart(productId){
@@ -152,8 +127,12 @@ function addToWishlist(id){
         success:function(response){
             if(response.user==false){
                 swal("Please Login")
+            }else if(response.blocked){
+                swal("You are blocked by admin!")    
             }else if(response.added){
                 swal("Added to wishlist")
+            }else if(response.inwishlist){
+                swal("Item is in wishlist already!")
             }
         },
         error:function(response){

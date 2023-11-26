@@ -1,12 +1,12 @@
 const express = require('express');
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
-const Cart = require('../models/cartModel');
 const Order = require('../models/orderModel');
 const Address = require('../models/addressModel');
 const Product = require('../models/productModel');
 const Wallet = require('../models/walletModel');
 const Coupon = require('../models/couponModel');
+const User = require('../models/userModel');
 var instance = new Razorpay({
     key_id: process.env.Razkeyid,
     key_secret: process.env.Razkeysecret,
@@ -17,11 +17,14 @@ const getCheckOut = async (req, res) => {
     try {
         let username = req.session.username;
         const user = req.session.userId;
-        const cart = await Cart.findOne({ UserId: user }).populate({ path: 'Products.ProductId', populate: { path: 'Offer' } }).populate('isCoupon');
+        const cart = await User.findOne({ _id: user }).populate({ path: 'Products.ProductId', populate: { path: 'Offer' } }).populate('isCoupon');
         const address = await Address.findOne({ UserId: user });
         let total = 0;
-
+        let subtotal = 0;
         var products = cart.Products;
+        products.forEach(item=>{
+            subtotal += (item.ProductId.Price * item.Quantity)
+        })
         products.forEach(item => {
             if (item.ProductId.Offer) {
                 if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now() && item.ProductId.Offer.isBlock==false) {
@@ -40,7 +43,7 @@ const getCheckOut = async (req, res) => {
         }
 
 
-        res.render('checkout', { cart, address, total, discountedAmount, message: '', username });
+        res.render('checkout', { cart, address, total,subtotal, discountedAmount, message: '', username });
     } catch (error) {
         console.log(error);
     }
@@ -54,7 +57,7 @@ function generateUniqueID() {
 
 const checkOut = async (req, res) => {
     let user = req.session.userId;
-    let cart = await Cart.findOne({ UserId: user }).populate({ path: 'Products.ProductId', populate: { path: 'Offer' } }).populate('isCoupon');
+    let cart = await User.findOne({ _id: user }).populate({ path: 'Products.ProductId', populate: { path: 'Offer' } }).populate('isCoupon');
     let totalamount = 0;
     cart.Products.forEach(item => {
         if (item.ProductId.Offer) {
@@ -93,11 +96,8 @@ const checkOut = async (req, res) => {
             }
 
             let products = cart.Products;
-            console.log(products);
             let addressindex = req.body.address;
-            console.log('addressid' + addressindex);
             const address = await Address.findOne({ UserId: user }, { _id: 0, Address: 1 });
-            console.log(address);
             let stocks = [];
             let orderedProducts = [];
             for (let i = 0; i < products.length; i++) {
@@ -137,6 +137,7 @@ const checkOut = async (req, res) => {
                         if (Payment == "Wallet") {
                             let newtransaction = {
                                 Amount: -totalamount,
+                                Description:"Product purchased",
                                 Date: new Date()
                             }
                             await Wallet.updateOne({ UserId: user }, { $inc: { Balance: -totalamount }, $push: { Transaction: newtransaction } });
@@ -144,7 +145,7 @@ const checkOut = async (req, res) => {
                         if (cart.isCoupon) {
                             await Coupon.updateOne({ _id: cart.isCoupon._id }, { $push: { usedUsers: user } })
                         }
-                        await Cart.updateOne({ UserId: user }, { $set: { Products: [] }, $unset: { isCoupon: 1 } });
+                        await User.updateOne({ _id: user }, { $set: { Products: [] }, $unset: { isCoupon: 1 } });
                         for (let i = 0; i < stocks.length; i++) {
                             await Product.updateOne({ _id: stocks[i].pId }, { $inc: { Stock: -stocks[i].qty } });
                         }
@@ -183,7 +184,7 @@ const verifyOrder = async (req, res) => {
         const { payment, order } = req.body;
         console.log('Your orderid-' + order.receipt);
         let user = req.session.userId;
-        let cart = await Cart.findOne({ UserId: user }).populate('isCoupon');
+        let cart = await User.findOne({ _id: user }).populate('isCoupon');
         let products = cart.Products;
         let stocks = [];
         for (let i = 0; i < products.length; i++) {
@@ -206,7 +207,7 @@ const verifyOrder = async (req, res) => {
                 await Coupon.updateOne({ _id: cart.isCoupon._id }, { $push: { usedUsers: user } })
             }
 
-            await Cart.updateOne({ UserId: user }, { $set: { Products: [] }, $unset: { isCoupon: 1 } });
+            await User.updateOne({ _id: user }, { $set: { Products: [] }, $unset: { isCoupon: 1 } });
 
             for (let i = 0; i < stocks.length; i++) {
                 await Product.updateOne({ _id: stocks[i].pId }, { $inc: { Stock: -stocks[i].qty } });
@@ -267,6 +268,7 @@ const cancelOrder = async (req, res) => {
         if (order.paymentMethod === "Online Payment" || order.paymentMethod === "Wallet") {
             let newtransaction = {
                 Amount: order.totalAmount,
+                Description:"Refunded",
                 Date: new Date()
             }
             await Wallet.updateOne({ UserId: user }, { $push: { Transaction: newtransaction }, $inc: { Balance: order.totalAmount } }, { upsert: true })
@@ -362,6 +364,7 @@ const submitReturnProduct = async (req, res) => {
         let amount = order.totalAmount;
         let newTransaction = {
             Amount: amount,
+            Description:"Refunded",
             Date: new Date()
         }
         await Order.updateOne({ _id: orderid }, { $set: { Status: "Returned", returnReason: returnreason } });

@@ -8,7 +8,7 @@
     <div class="col-lg-4 col-md-6">
         <div class="card p-3" style="width: 18rem;">
             <div class="card-body ">
-              <h5 class="card-title text-info"><b><%= coupon[i].Name %></b></h5>
+              <h5 class="card-title" style="color: rgb(201, 20, 89);"><b><%= coupon[i].Name %></b></h5>
               <p class="card-text">On min.purchase of Rs <%= coupon[i].criteriaAmount %></p>
               <p class="card-text">Code:<span class="text-danger ml-2"><%= coupon[i].couponCode %></span></p>
               <p class="card-text">Expiry:<b><%= coupon[i].expiryDate.toLocaleDateString('en-US', { year:

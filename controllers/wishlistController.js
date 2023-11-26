@@ -1,7 +1,6 @@
 var express = require('express');
 const User = require('../models/userModel');
 const Wishlist = require('../models/wishlistModel');
-const Cart = require('../models/cartModel');
 const Product = require('../models/productModel');
 
 const getWishlist = async (req, res) => {
@@ -22,12 +21,18 @@ const addWishList = async (req, res) => {
         if (!findUser) {
             return res.json({ user: false })
         }
+        if(findUser.isBlock){
+            return res.json({blocked:true});
+        }
         let productId = req.body.productId;
         const check = await Wishlist.findOne({ UserId: user, 'Products.ProductId': productId });
         if (!check) {
             await Wishlist.updateOne({ UserId: user }, { $push: { Products: { ProductId: productId } } }, { upsert: true })
+            res.json({ added: true });
+        }else{
+            res.json({inwishlist:true});
         }
-        res.json({ added: true });
+        
     } catch (err) {
         console.log(err);
         res.status(500).send(err);
@@ -39,7 +44,7 @@ const moveToCart = async (req, res) => {
         let productId = req.body.productId;
         let userId = req.session.userId;
         const product = await Product.findOne({ _id: productId });
-        const cart = await Cart.findOne({ $and: [{ UserId: userId, 'Products.ProductId': productId }] })
+        const cart = await User.findOne({ $and: [{ _id: userId, 'Products.ProductId': productId }] })
         if (cart) {
             return res.json({ itemexist: true });
         } else {
@@ -50,7 +55,7 @@ const moveToCart = async (req, res) => {
                 Quantity: 1
             }
             console.log(pr)
-            await Cart.updateOne({ UserId: userId }, { $push: { Products: pr }, $inc: { totalAmount: product.Price } }, { upsert: true });
+            await User.updateOne({ _id: userId }, { $push: { Products: pr }, $inc: { totalAmount: product.Price } });
         }
         await Wishlist.updateOne({ UserId: userId }, { $pull: { Products: { ProductId: productId } } });
         res.json({ stock: true });

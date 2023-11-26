@@ -5,7 +5,6 @@ const randomstring = require('randomstring');
 const Product = require('../models/productModel');
 const Category = require('../models/categoryModel');
 const User = require('../models/userModel');
-const Cart = require('../models/cartModel');
 const Rate = require('../models/rateModel');
 const Wallet = require('../models/walletModel');
 const Banner = require('../models/bannerModel');
@@ -28,14 +27,6 @@ const loadSignup = function (req, res) {
     referralcode = req.query.ref;
     console.log(req.query)
 }
-
-// const otpform = (req,res)=>{
-//     try{
-//         res.render('otpverify');
-//     }catch(err){
-//         console.log(err);
-//     }
-// }
 
 function generateUniqueID() {
     const timestamp = new Date().getTime().toString(36);
@@ -95,6 +86,7 @@ const verifyotp = async (req, res) => {
                 let referredUser = await User.findOne({ referralCode: referralcode });
                 let newtransaction = {
                     Amount: 100,
+                    Description:"Referral amount",
                     Date: new Date()
                 }
                 await Wallet.updateOne({ UserId: referredUser._id }, { $inc: { Balance: 100 }, $push: { Transaction: newtransaction } }, { upsert: true })
@@ -137,7 +129,11 @@ const loadLogin = function (req, res) {
 const login = async (req, res) => {
     try {
         const finduser = await User.findOne({ email: req.body.email });
+        
         if (finduser) {
+            if(finduser.isBlock){
+                return res.render('userBlock');
+            }
             const isPasswordValid = await bcrypt.compare(req.body.password, finduser.password);
             if (isPasswordValid) {
                 req.session.userLoggedIn = true;
@@ -218,19 +214,6 @@ const loadCategoryShop = async (req, res) => {
     }
 
 }
-
-// const loadBrandShop = async (req, res) => {
-//     try {
-//         let selectedBrand = req.params.id;
-//         let category = await Category.find();
-//         let brands = await Product.find({}, { Brand: 1 })
-//         const product = await Product.find({ Brand: selectedBrand });
-//         console.log(product)
-//         res.render('shop', { product, category, brands })
-//     } catch (error) {
-//         console.log(error);
-//     }
-// }
 
 const loadProductdDetail = async (req, res) => {
     try {

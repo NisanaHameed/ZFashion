@@ -49,9 +49,6 @@
                                                     <h6>
                                                         <%= cart.Products[i].ProductId.product_name %>
                                                     </h6>
-                                                    <!-- <h5>
-                                                        <%= cart.Products[i].ProductId.Price %>
-                                                    </h5> -->
                                                     <% if(cart.Products[i].ProductId.Offer){ %> 
                                                         <% if(new Date(cart.Products[i].ProductId.Offer.startDate)<=Date.now() && new Date(cart.Products[i].ProductId.Offer.endDate)>=Date.now() && cart.Products[i].ProductId.Offer.isBlock==false) { %> 
                                                     <h6 class="pt-2"> <del>Rs <%= cart.Products[i].ProductId.Price %></del><span class="ml-2 text-success">Rs <%= Math.ceil((cart.Products[i].ProductId.Price)-(cart.Products[i].ProductId.Price*cart.Products[i].ProductId.Offer.Value/100)) %></span></h6> 
@@ -75,7 +72,6 @@
 
                                             </td>
                                             <td class="cart__price">
-                                                <!-- <%= cart.Products[i].Quantity*cart.Products[i].ProductId.Price %> -->
                                                 <% if(cart.Products[i].ProductId.Offer){ %>
                                                     <% if(new Date(cart.Products[i].ProductId.Offer.startDate)<=Date.now() && new Date(cart.Products[i].ProductId.Offer.endDate)>=Date.now() && cart.Products[i].ProductId.Offer.isBlock==false) { %>
                                                         <%= (Math.ceil((cart.Products[i].ProductId.Price)-(cart.Products[i].ProductId.Price*cart.Products[i].ProductId.Offer.Value/100)))*cart.Products[i].Quantity %>
@@ -132,27 +128,13 @@
 
                 <% } %>
                 <div id="successMessage" class="text-danger"></div>
-                            <!-- <h6>Discount codes</h6>
-                        <form action="#">
-                            <input type="text" placeholder="Coupon code">
-                            <button type="submit">Apply</button>
-                        </form> -->
                         </div>
                         <div class="cart__total" id="pricefield">
                             <h6>Cart total</h6>
-                            <!-- <ul>
-                                <li>Subtotal <span>
-                                       Rs <%= cart.totalAmount %>
-                                    </span></li>
-                                <li>Total <span>
-                                    Rs <%= cart.totalAmount %>
-                                            </span>
-                                </li>
-                            </ul> -->
                             <ul class="checkout__total__all">
                                 <li>Subtotal <span>Rs <%= total %></span></li>
                                 <% if(cart.isCoupon){ %>
-                                    <li>Discount <span>Rs <%= cart.isCoupon.discountAmount %>
+                                    <li>Coupon Discount <span>Rs <%= cart.isCoupon.discountAmount %>
                                         </span></li>
                                     <% } %>
                                         <li>Total <span>Rs <%= discountedAmount %></span></li>
@@ -162,14 +144,14 @@
                     </div>
                     <% } else { %>
                         <div style="height: 250px;">
-                            <h3>Hey, it feels so light!</h3>
+                            <h4>Hey, it feels so light!</h4>
                             <p>There is nothing in your bag.Let's add some items.</p>
                             <a class="btn text-white" style="background-color: rgb(201, 20, 89);" href="/shop">SHOP</a>
                         </div>
                         <% } %>
                         <% }else { %>
                             <div style="height: 250px;">
-                                <h3>Hey, it feels so light!</h3>
+                                <h4>Hey, it feels so light!</h4>
                                 <p>There is nothing in your bag.Let's add some items.</p>
                                 <a class="btn text-white" style="background-color: rgb(201, 20, 89);" href="/shop">SHOP</a>
                             </div>
@@ -178,7 +160,6 @@
             </div>
         </div>
     </section>
-    <!-- Shopping Cart Section End -->
 
     <%- include('../layouts/user/footer.ejs'); -%>
     <script>

@@ -3,7 +3,6 @@ const user = require('../models/userModel');
 const bcrypt = require('bcrypt');
 const Order = require('../models/orderModel');
 const User = require('../models/userModel');
-const Papa = require('papaparse');
 
 const loadLogin = (req, res) => {
     try {
@@ -95,9 +94,9 @@ const loadDashboard = async (req, res) => {
             seriesData: JSON.stringify(seriesData),
             totalUsers,
             blockedUsers,
-            totalSale: orderlist[0].totalSale,
-            totalOrders: orderlist[0].totalOrders,
-            totalRefund: refund[0].totalRefund,
+            totalSale: orderlist[0]? orderlist[0].totalSale:0,
+            totalOrders: orderlist[0]? orderlist[0].totalOrders:0,
+            totalRefund: refund[0]? refund[0].totalRefund:0,
             cancelledOrder,
             returnedOrder,
             orderPayment: JSON.stringify(orderPayment),

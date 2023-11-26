@@ -316,7 +316,7 @@ ol {
 -----------------------*/
 
 .header {
-	background: #d5d5d5;
+	background: #f9f7f7;
 }
 
 .header__top {
@@ -2672,6 +2672,7 @@ ol {
 	color: #111111;
 	overflow: hidden;
 	margin-bottom: 18px;
+	font-weight: 700;
 }
 
 .checkout__order__products span {
@@ -2716,8 +2717,8 @@ ol {
 }
 
 .checkout__total__all li span {
-	color: #e53637;
-	font-weight: 700;
+	/* color: #e53637; */
+	/* font-weight: 700; */
 	float: right;
 }
 
@@ -3944,3 +3945,4 @@ input[type='radio']{
 	justify-content: space-between;
 	list-style: none;
   }
+  

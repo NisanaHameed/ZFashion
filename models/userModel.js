@@ -27,6 +27,25 @@ const user = mongoose.Schema({
     },
     referralCode:{
         type:String
+    },
+    Products:[{
+        ProductId:{
+            type:String,           
+            ref:'Product'
+        },
+        Quantity:{
+            type:Number,
+            dafault:1,
+            required:true
+        },
+        Size:{
+            type:String
+        }
+    }
+    ],
+    isCoupon:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Coupon'
     }
 });
 

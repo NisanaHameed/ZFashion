@@ -68,7 +68,7 @@ router.post('/editCategoryOffer/:id',categoryOfferController.editCategoryOffer);
 router.get('/blockCategoryOffer/:id',adminAuth,categoryOfferController.blockCategoryOffer);
 
 router.get('/salesReport',adminAuth,adminController.getSalesReport);
-router.get('/downloadSalesReport',adminAuth,adminController.downloadSalesReport);
+// router.get('/downloadSalesReport',adminAuth,adminController.downloadSalesReport);
 
 router.get('/logout',adminController.adminLogout);
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const Coupon = require('../models/couponModel');
-const Cart = require('../models/cartModel');
+const User = require('../models/userModel');
 
 const getAdminCoupon = async (req, res) => {
     try {
@@ -79,7 +79,7 @@ const applyCoupon = async (req, res) => {
             return res.json({ invalid: true })
         }
         let total = 0;
-        const cart = await Cart.findOne({ UserId: user }).populate({ path: 'Products.ProductId', populate: { path: 'Offer' } });
+        const cart = await User.findOne({ _id: user }).populate({ path: 'Products.ProductId', populate: { path: 'Offer' } });
         cart.Products.forEach(item => {
             if (item.ProductId.Offer) {
                 if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now()) {
@@ -101,7 +101,7 @@ const applyCoupon = async (req, res) => {
                 if (coupon.activationDate <= date && date <= coupon.expiryDate) {
                     if (!coupon.usedUsers.includes(user)) {
 
-                        await Cart.updateOne({ UserId: user }, { $set: { isCoupon: coupon._id }, $inc: { totalAmount: -discount } });
+                        await User.updateOne({ _id: user }, { $set: { isCoupon: coupon._id }, $inc: { totalAmount: -discount } });
 
                         return res.json({ couponapplied: true, code: code });
 
@@ -129,7 +129,7 @@ const removeCoupon = async (req, res) => {
         let user = req.session.userId;
         let couponcode = req.body.code;
         const coupon = await Coupon.findOne({ couponCode: couponcode })
-        await Cart.updateOne({ UserId: user }, { $unset: { isCoupon: 1 }, $inc: { totalAmount: coupon.discountAmount } });
+        await User.updateOne({ _id: user }, { $unset: { isCoupon: 1 }, $inc: { totalAmount: coupon.discountAmount } });
         await Coupon.updateOne({ couponCode: couponcode }, { $pull: { usedUsers: user } });
         res.json({ success: true });
     } catch (err) {
