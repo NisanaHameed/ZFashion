@@ -1,15 +1,15 @@
+const dotenv = require('dotenv').config();
 var express = require('express');
 var path = require('path');
 const connectMongo = require('./config/mongodb');
 const logger = require('morgan');
-const dotenv = require('dotenv').config();
 const error = require('./middleware/errorMiddleware');
 const session = require('express-session');
 
 var app = express();
 
 connectMongo().then(()=>{ console.log('MongoDB connected'); });
-const PORT = process.env.PORT || 6006;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT,()=>{
     console.log('server is running')
 })
