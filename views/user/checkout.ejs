@@ -34,7 +34,6 @@
                                 <div class="col-lg-6 col-md-6 pr-5">
                                     <% if(address) { %>
                                         <h6 class="mb-3"><b>Select an address</b></h6>
-                                        <!-- <div class="row pb-5"> -->
 
                                         <% for(let i=0;i<address.Address.length;i++) { %>
 
@@ -85,28 +84,27 @@
                                                 <li>
                                                     <%= cart.Products[i].ProductId.product_name %><b>
                                                             <span>
-                                                                <!-- Rs <% if(cart.Products[i].ProductId.Offer){ %>
-                                                                    <% if(new Date(cart.Products[i].ProductId.Offer.startDate)<=Date.now() && new Date(cart.Products[i].ProductId.Offer.endDate)>=Date.now()) { %>
-                                                                        <%= (Math.ceil((cart.Products[i].ProductId.Price)-(cart.Products[i].ProductId.Price*cart.Products[i].ProductId.Offer.Value/100)))*cart.Products[i].Quantity %>
-                                                                            <% }else { %>
-                                                                                <%= cart.Products[i].Quantity*cart.Products[i].ProductId.Price %>
-                                                                                    <% } %>
-                                                                                        <% }else { %>
-                                                                                            <%= cart.Products[i].Quantity*cart.Products[i].ProductId.Price %>
-                                                                                                <% } %> -->
-
-                                                                                                <% if(cart.Products[i].ProductId.Offer){ %> 
-                                                                                                    <% if(new Date(cart.Products[i].ProductId.Offer.startDate)<=Date.now() && new Date(cart.Products[i].ProductId.Offer.endDate)>=Date.now() && cart.Products[i].ProductId.Offer.isBlock==false) { %> 
-                                                                                                        
-                                                                                                <p class="text-success m-0">Rs <%= Math.ceil((cart.Products[i].ProductId.Price)-(cart.Products[i].ProductId.Price*cart.Products[i].ProductId.Offer.Value/100)) %></p>
-                                                                                                <p class="m-0"> <del>Rs <%= cart.Products[i].ProductId.Price %></del></p>
-                                                                                                <p class="text-danger m-0" style="font-size: small;"><b><%= cart.Products[i].ProductId.Offer.Value %>% OFF</b></p>
-                                                                                                <% }else { %>
-                                                                                                    <p class="text-success m-0">Rs <%= cart.Products[i].ProductId.Price %></p>
-                                                                                                     <% } %> 
-                                                                                                <% } else { %> 
-                                                                                                    <p class="text-success m-0">Rs <%= cart.Products[i].ProductId.Price %></p>
-                                                                                                    <% }%>
+                                                                <% if(cart.Products[i].ProductId.Offer){ %>
+                                                                    <% if(new Date(cart.Products[i].ProductId.Offer.startDate)<=Date.now()
+                                                                        && new Date(cart.Products[i].ProductId.Offer.endDate)>=Date.now() &&
+                                                                        cart.Products[i].ProductId.Offer.isBlock==false)
+                                                                        { %>
+                                                                        <p class="text-success m-0">Rs <%= Math.ceil((cart.Products[i].ProductId.Price)-(cart.Products[i].ProductId.Price*cart.Products[i].ProductId.Offer.Value/100)) %>
+                                                                        </p>
+                                                                        <p class="m-0"> <del>Rs <%= cart.Products[i].ProductId.Price %>
+                                                                                    </del></p>
+                                                                        <p class="text-danger m-0"
+                                                                            style="font-size: small;"><b>
+                                                                                <%= cart.Products[i].ProductId.Offer.Value %>% OFF
+                                                                            </b></p>
+                                                                        <% }else { %>
+                                                                            <p class="text-success m-0">Rs <%= cart.Products[i].ProductId.Price %>
+                                                                            </p>
+                                                                            <% } %>
+                                                                                <% } else { %>
+                                                                                    <p class="text-success m-0">Rs <%= cart.Products[i].ProductId.Price %>
+                                                                                    </p>
+                                                                                    <% }%>
                                                             </span></b>
                                                 </li>
 
@@ -114,14 +112,15 @@
                                         </ul>
                                         <ul class="checkout__total__all">
                                             <li>Subtotal <span class="text-dark">Rs <%= subtotal %></span></li>
-                                            <% if(total!=subtotal){ %> 
-                                            <li>Discount on MRP<span class="text-success">-Rs <%= subtotal-total %></span></li>
-                                            <% } %>
-                                            <% if(cart.isCoupon){ %>
-                                                <li>Coupon Discount <span class="text-success">-Rs <%= cart.isCoupon.discountAmount %>
-                                                    </span></li>
+                                            <% if(total!=subtotal){ %>
+                                                <li>Discount on MRP<span class="text-success">-Rs <%= subtotal-total %>
+                                                            </span></li>
                                                 <% } %>
-                                                    <li>Total <span style="font-size: large;"><b>Rs <%= discountedAmount %></b></span></li>
+                                                    <% if(cart.isCoupon){ %>
+                                                        <li>Coupon Discount <span class="text-success">-Rs <%= cart.isCoupon.discountAmount %>
+                                                            </span></li>
+                                                        <% } %>
+                                                            <li>Total <span style="font-size: large;"><b>Rs <%= discountedAmount %></b></span></li>
                                         </ul>
                                         <h5 class="order__title">PAYMENT</h5>
                                         <input type="radio" id="cod" name="payment" value="Cash On Delivery" required>
@@ -136,89 +135,69 @@
                                             style="background-color: rgb(201, 20, 89)">PLACE
                                             ORDER</button>
 
-                                        <!-- <div id="myModal" class="modal">
-                                            <div class="modal-content">
-                                                <span class="close" onclick="closeModal()">&times;</span>
-                                                <input type="hidden" id="bannerId" name="bannerId" value="">
-                                                <h6 class="text-center pb-2" style="color: rgb(77, 76, 76);">Are you
-                                                    sure you want to continue?</h6>
-                                                <div class="d-flex justify-content-center">
-                                                    <button type="submit" class="btn btn-danger"
-                                                        id="orderbutton" onclick="confirmOrder()">Delete</button>
-                                                </div> -->
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </form>
                     </div>
+        </div>
+        </form>
+        </div>
         </div>
     </section>
 
     <%- include('../layouts/user/footer.ejs') -%>
         <script>
-            // function confirmOrderForm() {
-            //     document.getElementById('myModal').style.display = 'block';
-            // }
-            // function closeModal() {
-            //     const modal = document.getElementById('myModal');
-            //     modal.style.display = 'none';
-            // }
-            
 
             document.getElementById('orderFormsubmit').addEventListener('submit', (e) => {
                 e.preventDefault();
-                
+
                 let selectedPayment = document.querySelector('input[name="payment"]:checked').value;
                 if (selectedPayment == "Wallet" || selectedPayment == "Cash On Delivery") {
-                    // let confirmation = window.confirm("Are you sure to continue?");
-                    // document.getElementById('myModal').style.display = 'block';
+
                     swal({
-                title: "Are you sure?",
-                // text: "You won't be able to revert this!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes",
-            }).then(function (result) { 
-                if (result.value) {
-                    
-                        let formdata = new FormData(document.getElementById('orderFormsubmit'));
-                        let data = {}
-                        formdata.forEach(function (value, key) {
-                            data[key] = value;
-                        });
-                        if (!data.address) {
-                            swal("Please add address!")
-                            return;
-                        }
-                        console.log(data)
-                        $.ajax({
-                            method: 'POST',
-                            url: '/submitcheckout',
-                            data: JSON.stringify(data),
-                            contentType: 'application/json',
-                            success: function (response) {
-                                if (response.walletbal == false) {
-                                    swal("Insufficient fund in wallet!");
-                                } else if (response.cod) {
-                                    window.location.href = '/orderSuccess';
+                        title: "Are you sure?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes",
+                    }).then(function (result) {
+                        if (result.value) {
 
-                                } else if (response.order) {
-                                    generateRazorpay(response.order);
-                                } else {
-                                    swal("Something went wrong!");
-                                }
-                            },
-                            error: function (err) {
-                                console.log(err);
+                            let formdata = new FormData(document.getElementById('orderFormsubmit'));
+                            let data = {}
+                            formdata.forEach(function (value, key) {
+                                data[key] = value;
+                            });
+                            if (!data.address) {
+                                swal("Please add address!")
+                                return;
                             }
-                        })
+                            console.log(data)
+                            $.ajax({
+                                method: 'POST',
+                                url: '/submitcheckout',
+                                data: JSON.stringify(data),
+                                contentType: 'application/json',
+                                success: function (response) {
+                                    if (response.walletbal == false) {
+                                        swal("Insufficient fund in wallet!");
+                                    } else if (response.cod) {
+                                        window.location.href = '/orderSuccess';
 
-                    }
-                })
+                                    } else if (response.order) {
+                                        generateRazorpay(response.order);
+                                    } else {
+                                        swal("Something went wrong!");
+                                    }
+                                },
+                                error: function (err) {
+                                    console.log(err);
+                                }
+                            })
+
+                        }
+                    })
                 } else {
                     let formdata = new FormData(document.getElementById('orderFormsubmit'));
                     let data = {}
@@ -226,9 +205,9 @@
                         data[key] = value;
                     });
                     if (!data.address) {
-                            swal("Please add address!")
-                            return;
-                        }
+                        swal("Please add address!")
+                        return;
+                    }
                     $.ajax({
                         method: 'POST',
                         url: '/submitcheckout',

@@ -125,7 +125,6 @@
                                 <label class="form-label">Write your comment</label>
                                 <textarea class="form-control" id="reviewinput_<%= order.Products[i].ProductId._id %>"
                                   rows="3"></textarea>
-                                <!-- <textarea class="form-control" id="reviewinput" rows="3"></textarea> -->
                               </div>
                               <input type="hidden" id="productid_<%= order.Products[i]._id %>" name="categoryId"
                                 value="<%= order.Products[i].ProductId._id %>">
@@ -135,43 +134,7 @@
                             </form>
                           </div>
                         </div>
-
-
-
-                        <!-- <form id="raingForm">
-                          <div class="rating">
-                            <input type="radio" id="star5" name="rating" value="5">
-                            <label for="star5"></label>
-                            <input type="radio" id="star4" name="rating" value="4">
-                            <label for="star4"></label>
-                            <input type="radio" id="star3" name="rating" value="3">
-                            <label for="star3"></label>
-                            <input type="radio" id="star2" name="rating" value="2">
-                            <label for="star2"></label>
-                            <input type="radio" id="star1" name="rating" value="1">
-                            <label for="star1"></label>
-                            <input type="hidden" id="rateproductid" value="<%= order.Products[i].ProductId._id %>">
-                          </div>
-                        </form>
-                        <a style="color: rgb(224, 15, 116);"
-                          onclick="reviewForm('<%= order.Products[i]._id %>')"><b>Tell Us More</b></a>
-                        <div id="myModal" class="modal">
-                          <div class="modal-content">
-                            <span class="close" onclick="closeModal()">&times;</span>
-                            <form id="reviewform">
-                              <div class="mb-3">
-                                <label class="form-label">Write your comment</label>
-                                <textarea class="form-control" id="reviewinput" rows="3"></textarea>
-                              </div>
-                              <input type="hidden" id="productid" name="categoryId" value="">
-                              <div class="d-flex justify-content-center">
-                                <button type="submit" class="btn btn-secondary" onclick="submitReview('<%= order.Products[i].ProductId._id %>')">SEND</button>
-                              </div>
-                            </form>
-                          </div>
-                        </div> -->
                         <% } %>
-
                     </div>
                   </div>
                 </div>
@@ -183,83 +146,49 @@
       </section>
       <%- include('../layouts/user/footer.ejs') -%>
         <script>
-
-
-          // function confirmDelete(orderId) {
-          //   const confirmation = confirm('Are you sure you want to cancel this order?');
-          //   if (confirmation) {
-          //     let id = orderId
-          //     cancellOrder(id);
-          //   }
-          // }
-
           function reviewForm(id) {
-            // Construct the ID for the modal dynamically
             let modalId = 'myModal_' + id;
-
-            // Get the modal and hidden input based on the constructed ID
             let form = document.getElementById(modalId);
             let productIdInput = document.getElementById('productid_' + id);
-
-            // Set the value for the hidden input
             productIdInput.value = id;
-
-            // Display the modal
             form.style.display = 'block';
           }
 
           function closeModal(id) {
-            // Get the modal by its static ID
             const modal = document.getElementById('myModal_' + id);
             modal.style.display = 'none';
           }
-
-
-          // function reviewForm(id) {
-          //   let form = document.getElementById('myModal');
-          //   document.getElementById('productid').value = id;
-          //   form.style.display = 'block';
-          // }
-
-          // function closeModal() {
-          //   const modal = document.getElementById('myModal');
-          //   modal.style.display = 'none';
-          // }
-
-
 
           function confirmDelete(orderId) {
             const data = { orderId: orderId }
             console.log(data);
             swal({
-                title: "Are you sure?",
-                // text: "You won't be able to revert this!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes",
+              title: "Are you sure?",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Yes",
             }).then(function (result) {
-                if (result.value) {
+              if (result.value) {
 
-            $.ajax({
-              method: 'POST',
-              url: '/cancellOrder',
-              data: JSON.stringify(data),
-              contentType: 'application/json',
-              success: function (response) {
-                if (response.cancelled) {
-                  swal('Your order has been cancelled successfully!!');
-                  // $('#orderpage').load('/order-Detail #orderpage');
-                }
-              },
-              error: function (err) {
-                console.log(err);
+                $.ajax({
+                  method: 'POST',
+                  url: '/cancellOrder',
+                  data: JSON.stringify(data),
+                  contentType: 'application/json',
+                  success: function (response) {
+                    if (response.cancelled) {
+                      swal('Your order has been cancelled successfully!!');
+                    }
+                  },
+                  error: function (err) {
+                    console.log(err);
+                  }
+                })
               }
             })
           }
-        })
-      }
 
           document.addEventListener("DOMContentLoaded", function () {
             const ratingInputs = document.querySelectorAll('input[name="rating"]');
@@ -285,7 +214,7 @@
                 data: JSON.stringify(data),
                 contentType: 'application/json',
                 success: function (response) {
-                  // Handle success if needed
+
                 },
                 error: function (err) {
                   console.log(err);
@@ -299,9 +228,8 @@
 
             reviewForms.forEach(form => {
               form.addEventListener("submit", function (event) {
-                event.preventDefault(); // Prevent the form from actually submitting
-
-                const productId = this.id.split('_')[1]; // Extract productID from form ID
+                event.preventDefault();
+                const productId = this.id.split('_')[1];
                 console.log(productId)
                 const reviewInput = document.getElementById('reviewinput_' + productId).value;
                 $.ajax({
@@ -329,85 +257,4 @@
             });
           });
 
-
-          // function submitReview(productId) {
-          //   console.log("heyyyyyyyyyyy")
-          //   // let review = document.getElementById('reviewinput').value;
-          //   const reviewInput = document.getElementById('reviewinput_' + productId).value;
-          //   console.log(reviewInput)
-          //   $.ajax({
-          //     method: 'POST',
-          //     url: '/submitProductReview',
-          //     data: {
-          //       productId,
-          //       reviewInput
-          //     },
-          //     success: function (response) {
-          //       if (response.reviewsubmitted) {
-          //         // setTimeout(()=>{
-          //         //   $('#orderpage').load('/order-Detail #orderpage');
-          //         // },2000)
-          //         swal('success');
-          //       }
-          //     },
-          //     error: function (err) {
-          //       if (err) {
-          //         console.log(err);
-          //       }
-          //     }
-          //   });
-          // }
-
-
-          // document.addEventListener("DOMContentLoaded", function () {
-          //   const ratingInputs = document.querySelectorAll('input[name="rating"]');
-          //   let productid = document.getElementById('rateproductid').value;
-          //   ratingInputs.forEach(input => {
-          //     input.addEventListener("click", function () {
-          //       const selectedRating = this.value;
-          //       submitRating(selectedRating, productid);
-          //     });
-          //   });
-
-          //   function submitRating(rating, id) {
-          //     console.log('rating' + rating)
-          //     console.log(id)
-          //     let rate = parseInt(rating)
-          //     console.log(typeof (rate));
-          //     let data = { rating: rate, productId: id };
-          //     $.ajax({
-          //       method: 'POST',
-          //       url: '/productRating',
-          //       data: JSON.stringify(data),
-          //       contentType: 'application/json',
-          //       success: function (response) {
-          //       },
-          //       error: function (err) {
-          //         console.log(err);
-          //       }
-          //     })
-          //   }
-          // });
-
-          // function submitReview(productId){
-          //   let review = document.getElementById('reviewinput').value;
-          //   $.ajax({
-          //     method:'POST',
-          //     url:'/submitProductReview',
-          //     data:{
-          //       productId,
-          //       review
-          //     },
-          //     success:function(response){
-          //       if(response.reviewsubmitted){
-          //         swal('success');
-          //       }
-          //     },
-          //     error:function(err){
-          //       if(err){
-          //         console.log(err);
-          //       }
-          //     }
-          //   })
-          // }
         </script>

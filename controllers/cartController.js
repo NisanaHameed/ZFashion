@@ -15,7 +15,7 @@ const loadCart = async (req, res) => {
             console.log(products)
             products.forEach(item => {
                 if (item.ProductId.Offer) {
-                    if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now() && item.ProductId.Offer.isBlock==false) {
+                    if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now() && item.ProductId.Offer.isBlock == false) {
                         let offerprice = Math.ceil(((item.ProductId.Price) - (item.ProductId.Price * item.ProductId.Offer.Value / 100))) * item.Quantity;
                         total += offerprice
                     } else {
@@ -63,15 +63,10 @@ const addCart = async (req, res) => {
         console.log(productId);
         const product = await Product.findOne({ _id: productId });
         if (product.Stock > 0) {
-            // let total = 0;
             const cart = await User.findOne({ $and: [{ _id: userId, 'Products.ProductId': productId }] })
-
             if (cart) {
-
                 return res.json({ incart: true });
-
             } else {
-
                 const pr = {
                     ProductId: productId,
                     Quantity: 1,
@@ -79,7 +74,6 @@ const addCart = async (req, res) => {
                 }
                 console.log(product.Price)
                 await User.updateOne({ _id: userId }, { $push: { Products: pr } });
-
             }
             return res.json({ stock: true });
         } else {
@@ -101,7 +95,7 @@ const removeCartItem = async (req, res) => {
         const newCart = await User.findOne({ _id: userId }).populate({ path: 'Products.ProductId', populate: { path: 'Offer' } });
         newCart.Products.forEach(item => {
             if (item.ProductId.Offer) {
-                if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now() && item.ProductId.Offer.isBlock==false) {
+                if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now() && item.ProductId.Offer.isBlock == false) {
                     let offerprice = Math.ceil(((item.ProductId.Price) - (item.ProductId.Price * item.ProductId.Offer.Value / 100))) * item.Quantity;
                     console.log('offerprice' + offerprice)
                     total += offerprice
@@ -145,7 +139,7 @@ const updateQuantity = async (req, res) => {
                 const updatedCart = await User.findOne({ _id: userId }).populate({ path: 'Products.ProductId', populate: { path: 'Offer' } });
                 updatedCart.Products.forEach(item => {
                     if (item.ProductId.Offer) {
-                        if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now() && item.ProductId.Offer.isBlock==false) {
+                        if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now() && item.ProductId.Offer.isBlock == false) {
                             let offerprice = Math.ceil(((item.ProductId.Price) - (item.ProductId.Price * item.ProductId.Offer.Value / 100))) * item.Quantity;
                             console.log('offerprice' + offerprice)
                             totalprice += offerprice

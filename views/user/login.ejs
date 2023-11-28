@@ -17,9 +17,7 @@
   
   <form class=" frmstyl p-5" action="/LoginUser" method="POST" onsubmit="">
 <h5 class="mb-5 mt-3">Login</h5>
-    <!-- {{!-- <label class="form-label">Username</label>
-    <input type="text" class="form-control" name="name"> --}} -->
-
+   
     <label class="form-label">Email</label>
     <input type="email" class="form-control" name="email" required aria-describedby="emailHelp"
       pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
@@ -27,7 +25,6 @@
     <label class="form-label mt-4">Password</label>
     <input type="password" class="form-control" name="password">
     
-    <!-- <p class="mt-2">By continuing,I agree to the Terms of Use and Privacy Policy</p> -->
     <p class="mt-2">New User? <a href="/signup" >Sign up</a></p>
     <div class="d-grid gap-2 col-6 mx-auto">
       <% if(error) { %> 

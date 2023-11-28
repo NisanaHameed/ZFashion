@@ -34,7 +34,6 @@
           <div class="form-container my-3" id="otpform" style="display: none;" style=" border: 1px solid grey;">
             <form action="/editVerifyOTP" method="post" style="width: 10rem;">
               <div class="form-group">
-                <!-- <label for="exampleInputPassword1" class="form-label">Enter Your OTP</label> -->
                 <input type="text" class="form-control" id="exampleInputPassword1" name="otp" placeholder="Enter OTP">
               </div>
               <div>
@@ -216,7 +215,6 @@ if(valid==true){
         seconds = 59;
       } else {
         clearInterval(timerInterval);
-        // Handle timeout here
       }
 
       timeElement.textContent = `${minutes}:${seconds}`;

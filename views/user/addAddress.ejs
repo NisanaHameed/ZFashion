@@ -43,80 +43,81 @@
                             <p class="text-danger" id="error"></p>
                         </div>
                         <div class="my-5 text-center">
-                            <button type="submit" class="btn text-white px-5 py-2" style="background-color: rgb(201, 20, 89);">ADD</button>
+                            <button type="submit" class="btn text-white px-5 py-2"
+                                style="background-color: rgb(201, 20, 89);">ADD</button>
                         </div>
-                        
+
                     </form>
                 </div>
             </div>
         </div>
         </section>
         <%- include('../layouts/user/footer.ejs') -%>
-        <script>
-            document.getElementById('addressForm').addEventListener('submit',(e)=>{
-                e.preventDefault();
+            <script>
+                document.getElementById('addressForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
 
-                let name = document.getElementById('name').value.trim();
-                let mobile = document.getElementById('mobile').value;
-                let state = document.getElementById('state').value.trim();
-                let housename = document.getElementById('housename').value.trim();
-                let city = document.getElementById('city').value.trim();
-                let locality = document.getElementById('locality').value.trim();
-                let pincode = document.getElementById('pincode').value;
-                const numberPattern = /\d/;
-                document.getElementById('error').innerText = "";
-                let valid = true;
-                if(name=="" || numberPattern.test(name)){
-                    document.getElementById('error').innerText = "Enter a valid name";
-                    valid=false;
-                } 
-                else if(mobile.length!==10){
-                    document.getElementById('error').innerText = "Enter a valid mobile number";
-                    valid=false;
-                } 
-                else if(state=="" || numberPattern.test(state)){
-                    document.getElementById('error').innerText = "Enter valid state";
-                    valid=false;
-                }
-                else if(housename=="" || numberPattern.test(housename)){
-                    document.getElementById('error').innerText = "Enter valid housename";
-                    valid=false;
-                }
-                else if(city=="" || numberPattern.test(city)){
-                    document.getElementById('error').innerText = "Enter valid city";
-                    valid=false;
-                }
-                else if(locality=="" || numberPattern.test(locality)){
-                    document.getElementById('error').innerText = "Enter valid locality";
-                    valid=false;
-                }
-                else if(pincode.length!==6){
-                    document.getElementById('error').innerText = "Enter a valid pincode";
-                    valid=false;
-                }
-                if(valid==true){
-                    submitAddress();
-                }
-            })
-                
-            
-            function submitAddress(){
-                let form = document.getElementById('addressForm');
-                const formdata = $(form).serialize(); 
-
-                $.ajax({
-                    method:'POST',
-                    url:'/addNewAddress',
-                    data:formdata,
-                    success:function(response){
-                        if(response.success){
-                            window.location.href = '/address';
-                        }
-                    },
-                    error:function(err){
-                        console.log(err);
-                        swal("Something went wrong!")
+                    let name = document.getElementById('name').value.trim();
+                    let mobile = document.getElementById('mobile').value;
+                    let state = document.getElementById('state').value.trim();
+                    let housename = document.getElementById('housename').value.trim();
+                    let city = document.getElementById('city').value.trim();
+                    let locality = document.getElementById('locality').value.trim();
+                    let pincode = document.getElementById('pincode').value;
+                    const numberPattern = /\d/;
+                    document.getElementById('error').innerText = "";
+                    let valid = true;
+                    if (name == "" || numberPattern.test(name)) {
+                        document.getElementById('error').innerText = "Enter a valid name";
+                        valid = false;
+                    }
+                    else if (mobile.length !== 10) {
+                        document.getElementById('error').innerText = "Enter a valid mobile number";
+                        valid = false;
+                    }
+                    else if (state == "" || numberPattern.test(state)) {
+                        document.getElementById('error').innerText = "Enter valid state";
+                        valid = false;
+                    }
+                    else if (housename == "" || numberPattern.test(housename)) {
+                        document.getElementById('error').innerText = "Enter valid housename";
+                        valid = false;
+                    }
+                    else if (city == "" || numberPattern.test(city)) {
+                        document.getElementById('error').innerText = "Enter valid city";
+                        valid = false;
+                    }
+                    else if (locality == "" || numberPattern.test(locality)) {
+                        document.getElementById('error').innerText = "Enter valid locality";
+                        valid = false;
+                    }
+                    else if (pincode.length !== 6) {
+                        document.getElementById('error').innerText = "Enter a valid pincode";
+                        valid = false;
+                    }
+                    if (valid == true) {
+                        submitAddress();
                     }
                 })
-            }
-        </script>
+
+
+                function submitAddress() {
+                    let form = document.getElementById('addressForm');
+                    const formdata = $(form).serialize();
+
+                    $.ajax({
+                        method: 'POST',
+                        url: '/addNewAddress',
+                        data: formdata,
+                        success: function (response) {
+                            if (response.success) {
+                                window.location.href = '/address';
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err);
+                            swal("Something went wrong!")
+                        }
+                    })
+                }
+            </script>

@@ -12,7 +12,8 @@
                             </div>
                             <div class="form-group">
                                 <label>Value</label>
-                                <input type="Number" class="form-control" name="value" id="value" value="<%= offer.Value %>">
+                                <input type="Number" class="form-control" name="value" id="value"
+                                    value="<%= offer.Value %>">
                             </div>
                             <div class="form-group">
                                 <label for="categoryDropdown">Category</label>
@@ -28,13 +29,16 @@
                             </div>
                             <div class="form-group">
                                 <label>Start Date</label>
-                                <input type="text" class="form-control" name="startdate" id="startdate" value="<%= offer.startDate.toISOString().split('T')[0] %>">
+                                <input type="text" class="form-control" name="startdate" id="startdate"
+                                    value="<%= offer.startDate.toISOString().split('T')[0] %>">
                             </div>
                             <div class="form-group">
                                 <label>End Date</label>
-                                <input type="text" class="form-control" name="enddate" id="enddate" value="<%= offer.endDate.toISOString().split('T')[0] %>">
+                                <input type="text" class="form-control" name="enddate" id="enddate"
+                                    value="<%= offer.endDate.toISOString().split('T')[0] %>">
                             </div>
-                            <input type="hidden" class="form-control" name="offerid" id="offerid" value="<%= offer._id %>">
+                            <input type="hidden" class="form-control" name="offerid" id="offerid"
+                                value="<%= offer._id %>">
                             <p class="text-danger mt-3" id="error"></p>
                             <button type="submit" class="btn btn-primary mt-4">Submit</button>
                         </form>
@@ -58,13 +62,13 @@
                 if (name == "") {
                     error.innerText = "Enter Offername";
                     valid = false;
-                } else if (value == "" || value<0) {
+                } else if (value == "" || value < 0) {
                     error.innerText = "Enter valid value";
                     valid = false;
-                } else if (startdate == "" ) {
+                } else if (startdate == "") {
                     error.innerText = "Enter valid Start Date";
                     valid = false;
-                }else if (enddate == "" || new Date(startdate) > new Date(enddate)) {
+                } else if (enddate == "" || new Date(startdate) > new Date(enddate)) {
                     error.innerText = "Enter valid End Date";
                     valid = false;
                 }
@@ -91,7 +95,7 @@
                             setTimeout(() => {
                                 window.location.href = '/admin/categoryOffer'
                             }, 1500)
-                        } 
+                        }
                     },
                     error: function (err) {
                         console.log(err);

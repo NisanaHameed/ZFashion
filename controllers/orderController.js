@@ -22,12 +22,12 @@ const getCheckOut = async (req, res) => {
         let total = 0;
         let subtotal = 0;
         var products = cart.Products;
-        products.forEach(item=>{
+        products.forEach(item => {
             subtotal += (item.ProductId.Price * item.Quantity)
         })
         products.forEach(item => {
             if (item.ProductId.Offer) {
-                if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now() && item.ProductId.Offer.isBlock==false) {
+                if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now() && item.ProductId.Offer.isBlock == false) {
                     let offerprice = Math.ceil(((item.ProductId.Price) - (item.ProductId.Price * item.ProductId.Offer.Value / 100))) * item.Quantity;
                     total += offerprice
                 } else {
@@ -42,8 +42,7 @@ const getCheckOut = async (req, res) => {
             discountedAmount -= cart.isCoupon.discountAmount;
         }
 
-
-        res.render('checkout', { cart, address, total,subtotal, discountedAmount, message: '', username });
+        res.render('checkout', { cart, address, total, subtotal, discountedAmount, message: '', username });
     } catch (error) {
         console.log(error);
     }
@@ -61,7 +60,7 @@ const checkOut = async (req, res) => {
     let totalamount = 0;
     cart.Products.forEach(item => {
         if (item.ProductId.Offer) {
-            if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now() && item.ProductId.Offer.isBlock==false) {
+            if (new Date(item.ProductId.Offer.startDate) <= Date.now() && new Date(item.ProductId.Offer.endDate) >= Date.now() && item.ProductId.Offer.isBlock == false) {
                 let offerprice = Math.ceil(((item.ProductId.Price) - (item.ProductId.Price * item.ProductId.Offer.Value / 100))) * item.Quantity;
                 console.log('offerprice' + offerprice)
                 totalamount += offerprice
@@ -107,10 +106,10 @@ const checkOut = async (req, res) => {
                 let c = { pId: a, qty: b };
                 stocks.push(c);
                 let productPrice = products[i].ProductId.Price;
-                if(products[i].ProductId.Offer){
-                    if(new Date(products[i].ProductId.Offer.startDate) <= Date.now() && new Date(products[i].ProductId.Offer.endDate) >= Date.now() && products[i].ProductId.Offer.isBlock==false){
+                if (products[i].ProductId.Offer) {
+                    if (new Date(products[i].ProductId.Offer.startDate) <= Date.now() && new Date(products[i].ProductId.Offer.endDate) >= Date.now() && products[i].ProductId.Offer.isBlock == false) {
                         productPrice = Math.ceil(((products[i].ProductId.Price) - (products[i].ProductId.Price * products[i].ProductId.Offer.Value / 100)));
-                    }        
+                    }
                 }
                 let p = {
                     ProductId: products[i].ProductId._id,
@@ -129,7 +128,7 @@ const checkOut = async (req, res) => {
                 Date: Date.now(),
                 Status: status,
                 paymentMethod: req.body.payment,
-                OrderId:generateUniqueID()
+                OrderId: generateUniqueID()
             });
             await orderData.save()
                 .then(async (neworder) => {
@@ -137,7 +136,7 @@ const checkOut = async (req, res) => {
                         if (Payment == "Wallet") {
                             let newtransaction = {
                                 Amount: -totalamount,
-                                Description:"Product purchased",
+                                Description: "Product purchased",
                                 Date: new Date()
                             }
                             await Wallet.updateOne({ UserId: user }, { $inc: { Balance: -totalamount }, $push: { Transaction: newtransaction } });
@@ -268,7 +267,7 @@ const cancelOrder = async (req, res) => {
         if (order.paymentMethod === "Online Payment" || order.paymentMethod === "Wallet") {
             let newtransaction = {
                 Amount: order.totalAmount,
-                Description:"Refunded",
+                Description: "Refunded",
                 Date: new Date()
             }
             await Wallet.updateOne({ UserId: user }, { $push: { Transaction: newtransaction }, $inc: { Balance: order.totalAmount } }, { upsert: true })
@@ -364,7 +363,7 @@ const submitReturnProduct = async (req, res) => {
         let amount = order.totalAmount;
         let newTransaction = {
             Amount: amount,
-            Description:"Refunded",
+            Description: "Refunded",
             Date: new Date()
         }
         await Order.updateOne({ _id: orderid }, { $set: { Status: "Returned", returnReason: returnreason } });

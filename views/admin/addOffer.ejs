@@ -45,13 +45,13 @@
                 if (name == "") {
                     error.innerText = "Enter Offername";
                     valid = false;
-                } else if (value == "" || value<0) {
+                } else if (value == "" || value < 0) {
                     error.innerText = "Enter valid value";
                     valid = false;
-                } else if (startdate == "" ) {
+                } else if (startdate == "") {
                     error.innerText = "Enter valid Start Date";
                     valid = false;
-                }else if (enddate == "" || new Date(startdate)>new Date(enddate)) {
+                } else if (enddate == "" || new Date(startdate) > new Date(enddate)) {
                     error.innerText = "Enter valid End Date";
                     valid = false;
                 }

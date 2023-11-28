@@ -120,7 +120,7 @@
 
                 document.getElementById('edituseraddress').addEventListener('submit', function (e) {
                     e.preventDefault();
-                    
+
                     let name = document.getElementById('name').value.trim();
                     let mobile = document.getElementById('mobile').value;
                     let state = document.getElementById('state').value.trim();
@@ -161,27 +161,24 @@
                     }
                     if (valid == true) {
                         submiteditedAddress();
-                    //     const id = document.getElementById('addressid').value;
-                    // this.action = `/editAddress/${id}`;
-
-                    }                   
+                    }
                 });
 
-                function submiteditedAddress(){
+                function submiteditedAddress() {
                     const id = document.getElementById('addressid').value;
                     let form = document.getElementById('edituseraddress')
-                    let formdata = $(form).serialize(); 
+                    let formdata = $(form).serialize();
                     console.log(formdata);
                     $.ajax({
-                        method:'POST',
-                        url:`/editAddress/${id}`,
-                        data:formdata,
-                        success:function(response){
-                            if(response.success){
+                        method: 'POST',
+                        url: `/editAddress/${id}`,
+                        data: formdata,
+                        success: function (response) {
+                            if (response.success) {
                                 $('#useraddress').load('/address #useraddress');
                             }
                         },
-                        error:function(err){
+                        error: function (err) {
                             console.log(err);
                         }
                     })

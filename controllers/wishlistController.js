@@ -21,18 +21,18 @@ const addWishList = async (req, res) => {
         if (!findUser) {
             return res.json({ user: false })
         }
-        if(findUser.isBlock){
-            return res.json({blocked:true});
+        if (findUser.isBlock) {
+            return res.json({ blocked: true });
         }
         let productId = req.body.productId;
         const check = await Wishlist.findOne({ UserId: user, 'Products.ProductId': productId });
         if (!check) {
             await Wishlist.updateOne({ UserId: user }, { $push: { Products: { ProductId: productId } } }, { upsert: true })
             res.json({ added: true });
-        }else{
-            res.json({inwishlist:true});
+        } else {
+            res.json({ inwishlist: true });
         }
-        
+
     } catch (err) {
         console.log(err);
         res.status(500).send(err);

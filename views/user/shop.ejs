@@ -25,13 +25,10 @@
                 <div class="col-lg-3 col-md-3">
                     <div class="shop__sidebar">
                         <form method="get">
-                        <div class="shop__sidebar__search">
-                            
+                        <div class="shop__sidebar__search">                            
                                 <input type="text" placeholder="Search..." name="search">
-                                <button type="submit"><span class="icon_search"></span></button>
-                           
-                        </div>
-                        
+                                <button type="submit"><span class="icon_search"></span></button>                          
+                        </div>                        
                         <div class="shop__sidebar__accordion">
                             <div class="accordion" id="accordionExample">
                                 <div class="card">
@@ -43,10 +40,8 @@
                                             <div class="shop__sidebar__categories">
                                                 <ul class="nice-scroll">
                                                    <% for(let i=0;i<category.length;i++) { %> 
-
                                                     <li class="mt-3" ><input type="checkbox" class="mr-2" name="searchcategory" value="<%= category[i].name %>" <%= selectedCategory.includes(category[i].name) && 'checked' %>><%= category[i].name %></li>
-                                                    <% } %>
-                                                   
+                                                    <% } %>                                                  
                                                 </ul>
                                             </div>
                                         </div>
@@ -62,13 +57,11 @@
                                                 <ul>
                                                     <% for(let i=0;i<brands.length;i++) { %> 
                                                     <li class="mt-3"><input type="checkbox" class="mr-2" name="searchbrand" value="<%= brands[i] %>" <%= selectedBrand.includes(brands[i]) && 'checked' %>><%= brands[i]%></li>
-                                                    <% } %>
-                                                  
+                                                    <% } %>                                                 
                                                 </ul>
                                             </div>
                                         </div>
-                                    </div>
-                                    
+                                    </div>                                    
                                 </div>
                                 <div class="card">
                                     <div class="card-heading">
@@ -77,8 +70,7 @@
                                     <div id="collapseTwo" class="collapse show" data-parent="#accordionExample">
                                         <div class="card-body">
                                             <div class="shop__sidebar__brand">
-                                                <ul>
-                                                   
+                                                <ul>                                                   
                                                     <li class="mt-3"><input type="radio" class="mr-2" name="sort" value="1" <%= sort==1 && 'checked' %>>Low - High</li>
                                                     <li class="mt-3"><input type="radio" class="mr-2" name="sort" value="-1" <%= sort==-1 && 'checked' %>>High - Low</li>
                                                   
@@ -92,47 +84,22 @@
                         </div>
                         <div>
                             <button type="submit" class="btn text-white my-5" style="background-color: rgb(192, 3, 107);">FILTER</button>
-                        </div>
-                        
+                        </div>                        
                         </form>
                     </div>
                 </div>
                 <div class="col-lg-9 col-md-9">
-                    <!-- <form method="GET">
-                    <div class="shop__product__option">
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 col-sm-6">
-                                <div class="shop__product__option__left">
-                                    <p>Showing 1-12 of 126 results</p>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-sm-6">
-                                <div class="shop__product__option__right">
-                                    <p>Sort by Price:</p>
-                                    <select>
-                                        <option value="1" name="sort">Low - High</option>
-                                        <option value="-1" name="sort">High - Low</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form> -->
                     <div class="row">
                         <% for(let i=0 ; i<product.length ; i++){ %> 
-
-
                         <div class="col-lg-4 col-md-6 col-sm-6">
                             <div class="product__item">
                                <div class="product__item__pic set-bg" data-setbg="/userImages/<%= product[i].Image.image3 %>">
                                     <ul class="product__hover">
                                         <li><a onclick="addToWishlist('<%= product[i]._id %>')"><img src="/user/img/icon/heart.png" alt=""></a></li>
                                         <li><a href="/productDetail/<%= product[i]._id %>"><img src="/user/img/icon/search.png" alt=""></a></li>
-                                    </ul>
-                                    
+                                    </ul>                                   
                                 </div>
-                                <div >
-                                    
+                                <div >                                   
                                     <h6 class="mt-3"><%= product[i].product_name %></h6>
                                     <% if(product[i].Offer){ %> 
                                         <% if(new Date(product[i].Offer.startDate)<=Date.now() && new Date(product[i].Offer.endDate)>=Date.now() && product[i].Offer.isBlock==false) { %> 
@@ -145,25 +112,13 @@
                                         <% }%> 
                                     <% if(product[i].Stock==0) { %>  
                                         <span class="text-danger text-small">Out of Stock</span>
-                                        <% } %>
-                                                              
+                                        <% } %>                                                             
                                 </div>
                             </div>
                         </div>
                         <% } %>
                        
                     </div>
-                    <!-- <div class="row">
-                        <div class="col-lg-12" id="pagination">
-                            <div class="product__pagination">
-                                <a class="active" href="#">1</a>
-                                <a href="#">2</a>
-                                <a href="#">3</a>
-                                <span>...</span>
-                                <a href="#">21</a>
-                            </div>
-                        </div>
-                    </div> -->
                 </div>
             </div>
         </div>

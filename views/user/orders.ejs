@@ -1,27 +1,31 @@
 <%- include('../layouts/user/header.ejs') -%>
-<%- include('../layouts/user/sidebar.ejs') -%>
-<div class="container" style="min-height: 90vh;">
-  <% if(order.length){ %> 
-    <div class="row mt-4">
-        <% for(let i=order.length-1;i>=0;i--) { %> 
-          <div class="card w-75 mb-3">
-            <div class="card-body">
-              <h5 class="card-title">Order ID : <%= order[i].OrderId %></h5>
-              <% if(order[i].Status=="Cancelled"){ %>
-                <h5 style="color: red;"><b><%= order[i].Status %></b></h5>
-                 <% }else{ %> 
-              <h5 style="color: green;"><b><%= order[i].Status %></b></h5>
-              <% } %>
-              <!-- <p class="card-text mt-2">On <%= order[i].deliveryDate.toISOString().split('T')[0] %></p> -->
-              <a href="/order-Detail/<%= order[i]._id %>" class="btn btn-outline-secondary btn-sm mt-2" >View Details</a>
+  <%- include('../layouts/user/sidebar.ejs') -%>
+    <div class="container" style="min-height: 90vh;">
+      <% if(order.length){ %>
+        <div class="row mt-4">
+          <% for(let i=order.length-1;i>=0;i--) { %>
+            <div class="card w-75 mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Order ID : <%= order[i].OrderId %>
+                </h5>
+                <% if(order[i].Status=="Cancelled" ){ %>
+                  <h5 style="color: red;"><b>
+                      <%= order[i].Status %>
+                    </b></h5>
+                  <% }else{ %>
+                    <h5 style="color: green;"><b>
+                        <%= order[i].Status %>
+                      </b></h5>
+                    <% } %>
+                      <a href="/order-Detail/<%= order[i]._id %>" class="btn btn-outline-secondary btn-sm mt-2">View Details</a>
+              </div>
             </div>
-          </div>
 
-              <% } %>
+            <% } %>
+        </div>
+        <% }else { %>
+          <h4 class="mt-5" style="color: rgb(227, 30, 129);">You have'nt purchased anything yet!</h4>
+          <% } %>
     </div>
-    <% }else { %>
-      <h4 class="mt-5" style="color: rgb(227, 30, 129);">You have'nt purchased anything yet!</h4> 
-      <% } %>
-</div>
-</section>
-<%- include('../layouts/user/footer.ejs') -%>
+    </section>
+    <%- include('../layouts/user/footer.ejs') -%>

@@ -26,7 +26,7 @@ const addCategoryOffer = async (req, res) => {
         let catgorycheck = await Category.findOne({ name: category })
         if (catgorycheck.Offer) {
             return res.json({ categoryexist: true });
-        } 
+        }
         let newCategoryOffer = new CategoryOffer({
             Name: name,
             Value: value,
@@ -37,7 +37,7 @@ const addCategoryOffer = async (req, res) => {
         let savedCategoryOffer = await newCategoryOffer.save()
         await Category.updateOne({ name: category }, { $set: { Offer: savedCategoryOffer._id } });
         res.json({ success: true });
-    
+
     } catch (err) {
         console.log(err);
         res.status(500).send(err);
@@ -63,11 +63,11 @@ const editCategoryOffer = async (req, res) => {
         let catgorycheck = await Category.findOne({ name: category })
         if (category && catgorycheck.Offer) {
             return res.json({ categoryexist: true });
-        } 
-            await CategoryOffer.updateOne({ _id: offerid }, { $set: { Name: name, Value: value, Category: catgorycheck._id, startDate: startdate, endDate: enddate } })
-            await Category.updateOne({ name: category }, { $set: { Offer: offerid } });
-            await Category.updateOne({ name: offer.Category }, { $unset: { Offer: 1 } });
-            res.json({ success: true });    
+        }
+        await CategoryOffer.updateOne({ _id: offerid }, { $set: { Name: name, Value: value, Category: catgorycheck._id, startDate: startdate, endDate: enddate } })
+        await Category.updateOne({ name: category }, { $set: { Offer: offerid } });
+        await Category.updateOne({ name: offer.Category }, { $unset: { Offer: 1 } });
+        res.json({ success: true });
 
     } catch (err) {
         console.log(err);
@@ -75,7 +75,7 @@ const editCategoryOffer = async (req, res) => {
     }
 }
 
-const blockCategoryOffer = async (req,res)=>{
+const blockCategoryOffer = async (req, res) => {
     try {
         let offerid = req.params.id;
         const offer = await CategoryOffer.findById(offerid);

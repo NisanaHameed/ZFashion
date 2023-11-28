@@ -86,7 +86,7 @@ const verifyotp = async (req, res) => {
                 let referredUser = await User.findOne({ referralCode: referralcode });
                 let newtransaction = {
                     Amount: 100,
-                    Description:"Referral amount",
+                    Description: "Referral amount",
                     Date: new Date()
                 }
                 await Wallet.updateOne({ UserId: referredUser._id }, { $inc: { Balance: 100 }, $push: { Transaction: newtransaction } }, { upsert: true })
@@ -110,7 +110,7 @@ const verifyotp = async (req, res) => {
 const home = async (req, res) => {
     try {
         let username = req.session.username;
-        const product = await Product.find({Stock:{$ne:0}}).populate('Offer');
+        const product = await Product.find({ Stock: { $ne: 0 } }).populate('Offer');
         const category = await Category.find();
         const banner = await Banner.find();
         res.render('home', { product, category, username, banner });
@@ -129,9 +129,9 @@ const loadLogin = function (req, res) {
 const login = async (req, res) => {
     try {
         const finduser = await User.findOne({ email: req.body.email });
-        
+
         if (finduser) {
-            if(finduser.isBlock){
+            if (finduser.isBlock) {
                 return res.render('userBlock');
             }
             const isPasswordValid = await bcrypt.compare(req.body.password, finduser.password);
@@ -189,7 +189,6 @@ const loadShop = async (req, res) => {
             Category: categorytoFront,
             Brand: findBrand,
             $or: [
-                // { Brand: { $regex: search, $options: 'i' } } ,
                 { product_name: { $regex: search, $options: 'i' } },
             ]
         }).populate('Offer').sort(sortProduct);
@@ -223,7 +222,6 @@ const loadProductdDetail = async (req, res) => {
         let catgry = product.Category;
         let similar = await Product.find({ Category: catgry, _id: { $ne: id } }).populate('Offer');
         const rate = await Rate.findOne({ ProductId: id }).populate('User.UserId');
-        // console.log('Rate' + rate);
         res.render('productdetail', { product, similar, rate, username });
 
     } catch (error) {
@@ -280,7 +278,6 @@ const editUserProfile = async (req, res) => {
 
             } else {
                 console.log('OTP sent');
-                // res.render('otpverify');
                 res.json({ success: true });
 
             }
@@ -342,11 +339,11 @@ const logout = (req, res) => {
     }
 }
 
-const getContact = (req,res)=>{
-    try{
+const getContact = (req, res) => {
+    try {
         let username = req.session.username;
-        res.render('contact',{username});
-    }catch(err){
+        res.render('contact', { username });
+    } catch (err) {
         console.log(err);
     }
 }
@@ -361,7 +358,6 @@ module.exports = {
     loadShop,
     loadProductdDetail,
     loadCategoryShop,
-    // loadBrandShop,
     getProfile,
     editUserProfile,
     editVerifyOtp,

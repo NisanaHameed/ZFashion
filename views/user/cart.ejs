@@ -23,148 +23,159 @@
     <section class="shopping-cart spad">
         <div class="container" style="min-height: 70vh;" id="cartpage">
             <div class="row" id="reloadArea">
-                <% if(cart) { %> 
-                <% if (cart.Products.length>0) {%>
-                    <div class="col-lg-8 pr-5">
-                        <div class="shopping__cart__table">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>Quantity</th>
-                                        <th>Total</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    <% for(let i=0;i<cart.Products.length;i++) { %>
+                <% if(cart) { %>
+                    <% if (cart.Products.length>0) {%>
+                        <div class="col-lg-8 pr-5">
+                            <div class="shopping__cart__table">
+                                <table>
+                                    <thead>
                                         <tr>
-                                            <td class="product__cart__item">
-                                                <div class="product__cart__item__pic" ><a href="/productDetail/<%= cart.Products[i].ProductId._id %>">
-                                                    <img src="/userImages/<%= cart.Products[i].ProductId.Image.image1 %>"
-                                                        alt=""></a>
-                                                </div>
-                                                <div class="product__cart__item__text">
-                                                    <h6>
-                                                        <%= cart.Products[i].ProductId.product_name %>
-                                                    </h6>
-                                                    <% if(cart.Products[i].ProductId.Offer){ %> 
-                                                        <% if(new Date(cart.Products[i].ProductId.Offer.startDate)<=Date.now() && new Date(cart.Products[i].ProductId.Offer.endDate)>=Date.now() && cart.Products[i].ProductId.Offer.isBlock==false) { %> 
-                                                    <h6 class="pt-2"> <del>Rs <%= cart.Products[i].ProductId.Price %></del><span class="ml-2 text-success">Rs <%= Math.ceil((cart.Products[i].ProductId.Price)-(cart.Products[i].ProductId.Price*cart.Products[i].ProductId.Offer.Value/100)) %></span></h6> 
-                                                    <% }else { %>
-                                                        <h6 class="pt-2">Rs <%= cart.Products[i].ProductId.Price %></h6>
-                                                         <% } %> 
-                                                    <% } else { %> 
-                                                        <h6 class="pt-2">Rs <%= cart.Products[i].ProductId.Price %></h6>
-                                                        <% }%>
-                                                </div>
-                                            </td>
-                                            <td class="quantity__item">
-                                                
-                                                <div class="quantity-input">
-                                                    <button class="quantity-btn decrement"
-                                                        onclick="updateQuantity('<%= cart.Products[i].ProductId._id %>',-1)"><</button>
-                                                    <input type="text" value="<%= cart.Products[i].Quantity %>">
-                                                    <button class="quantity-btn increment" id="incrementproduct"
-                                                        onclick="updateQuantity('<%= cart.Products[i].ProductId._id %>',1)">></button>
-                                                </div> 
-
-                                            </td>
-                                            <td class="cart__price">
-                                                <% if(cart.Products[i].ProductId.Offer){ %>
-                                                    <% if(new Date(cart.Products[i].ProductId.Offer.startDate)<=Date.now() && new Date(cart.Products[i].ProductId.Offer.endDate)>=Date.now() && cart.Products[i].ProductId.Offer.isBlock==false) { %>
-                                                        <%= (Math.ceil((cart.Products[i].ProductId.Price)-(cart.Products[i].ProductId.Price*cart.Products[i].ProductId.Offer.Value/100)))*cart.Products[i].Quantity %>
-                                                        <% }else { %>
-                                                            <%= cart.Products[i].Quantity*cart.Products[i].ProductId.Price %>
-                                                             <% } %>
-                                                     <% }else { %>
-                                                        <%= cart.Products[i].Quantity*cart.Products[i].ProductId.Price %>
-                                                         <% } %>
-                                            </td>
-                                            <td class="cart__close"><a href="#"
-                                                    onclick="removeItem('<%= cart.Products[i].ProductId._id %>')"><i
-                                                        class="fa fa-close"></i></a></td>
+                                            <th>Product</th>
+                                            <th>Quantity</th>
+                                            <th>Total</th>
+                                            <th></th>
                                         </tr>
-                                        <% } %>
+                                    </thead>
+                                    <tbody>
 
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="row py-5">
-                            <div class="col-lg-6 col-md-6 col-sm-6">
-                                <div class="continue__btn">
-                                    <a href="/shop" style="background-color: rgb(201, 20, 89);color: white;">ADD MORE</a>
-                                </div>
+                                        <% for(let i=0;i<cart.Products.length;i++) { %>
+                                            <tr>
+                                                <td class="product__cart__item">
+                                                    <div class="product__cart__item__pic"><a
+                                                            href="/productDetail/<%= cart.Products[i].ProductId._id %>">
+                                                            <img src="/userImages/<%= cart.Products[i].ProductId.Image.image1 %>"
+                                                                alt=""></a>
+                                                    </div>
+                                                    <div class="product__cart__item__text">
+                                                        <h6>
+                                                            <%= cart.Products[i].ProductId.product_name %>
+                                                        </h6>
+                                                        <% if(cart.Products[i].ProductId.Offer){ %>
+                                                            <% if(new Date(cart.Products[i].ProductId.Offer.startDate)<=Date.now()
+                                                                && new Date(cart.Products[i].ProductId.Offer.endDate)>=Date.now() &&
+                                                                cart.Products[i].ProductId.Offer.isBlock==false) { %>
+                                                                <h6 class="pt-2"> <del>Rs <%= cart.Products[i].ProductId.Price %>
+                                                                            </del><span class="ml-2 text-success">Rs <%= Math.ceil((cart.Products[i].ProductId.Price)-(cart.Products[i].ProductId.Price*cart.Products[i].ProductId.Offer.Value/100)) %></span></h6>
+                                                                <% }else { %>
+                                                                    <h6 class="pt-2">Rs <%=
+                                                                            cart.Products[i].ProductId.Price %>
+                                                                    </h6>
+                                                                    <% } %>
+                                                                        <% } else { %>
+                                                                            <h6 class="pt-2">Rs <%=
+                                                                                    cart.Products[i].ProductId.Price %>
+                                                                            </h6>
+                                                                            <% }%>
+                                                    </div>
+                                                </td>
+                                                <td class="quantity__item">
+
+                                                    <div class="quantity-input">
+                                                        <button class="quantity-btn decrement"
+                                                            onclick="updateQuantity('<%= cart.Products[i].ProductId._id %>',-1)"><</button>
+                                                                <input type="text"
+                                                                    value="<%= cart.Products[i].Quantity %>">
+                                                                <button class="quantity-btn increment"
+                                                                    id="incrementproduct"
+                                                                    onclick="updateQuantity('<%= cart.Products[i].ProductId._id %>',1)">></button>
+                                                    </div>
+                                                </td>
+                                                <td class="cart__price">
+                                                    <% if(cart.Products[i].ProductId.Offer){ %>
+                                                        <% if(new Date(cart.Products[i].ProductId.Offer.startDate)<=Date.now()
+                                                            && new Date(cart.Products[i].ProductId.Offer.endDate)>=Date.now() &&
+                                                            cart.Products[i].ProductId.Offer.isBlock==false) { %>
+                                                            <%= (Math.ceil((cart.Products[i].ProductId.Price)-(cart.Products[i].ProductId.Price*cart.Products[i].ProductId.Offer.Value/100)))*cart.Products[i].Quantity %>
+                                                                <% }else { %>
+                                                                    <%= cart.Products[i].Quantity*cart.Products[i].ProductId.Price %>
+                                                                        <% } %>
+                                                                            <% }else { %>
+                                                                                <%= cart.Products[i].Quantity*cart.Products[i].ProductId.Price %>
+                                                                                    <% } %>
+                                                </td>
+                                                <td class="cart__close"><a href="#"
+                                                        onclick="removeItem('<%= cart.Products[i].ProductId._id %>')"><i
+                                                            class="fa fa-close"></i></a></td>
+                                            </tr>
+                                            <% } %>
+
+                                    </tbody>
+                                </table>
                             </div>
-                            
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="cart__discount">
+                            <div class="row py-5">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <div class="continue__btn">
+                                        <a href="/shop" style="background-color: rgb(201, 20, 89);color: white;">ADD
+                                            MORE</a>
+                                    </div>
+                                </div>
 
-                            <a href="/coupons" class="text-danger mb-4"><b>ALL COUPONS</b></a>
-            <% if(!cart.isCoupon) { %>
-                <form id="couponform" class="d-flex align-items-center mb-2" >
-                    <div style="flex: 1;">
-                        
-                        <input type="text" id="couponCode" name="coupon" class="form-control"
-                            placeholder="Have a coupon? Enter the code!">
-                    </div>
-                    <button type="submit"  class="btn btn-info" id="applyCouponButton">Apply</button>
-
-                </form>
-                <% }else { %>
-                    <form id="deletecoupon" class="d-flex align-items-center mb-2" >
-                        <div style="flex: 1;">
-
-                            <input id="" name="coupon" class="form-control"
-                                value="<%= cart.isCoupon.couponCode %>" disabled>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-danger"
-                            onclick="deletecouponform('<%= cart.isCoupon.couponCode %>')">Remove</button>
+                        <div class="col-lg-4">
+                            <div class="cart__discount">
 
-                    </form>
+                                <a href="/coupons" class="text-danger mb-4"><b>ALL COUPONS</b></a>
+                                <% if(!cart.isCoupon) { %>
+                                    <form id="couponform" class="d-flex align-items-center mb-2">
+                                        <div style="flex: 1;">
 
-                <% } %>
-                <div id="successMessage" class="text-danger"></div>
+                                            <input type="text" id="couponCode" name="coupon" class="form-control"
+                                                placeholder="Have a coupon? Enter the code!">
+                                        </div>
+                                        <button type="submit" class="btn btn-info" id="applyCouponButton">Apply</button>
+
+                                    </form>
+                                    <% }else { %>
+                                        <form id="deletecoupon" class="d-flex align-items-center mb-2">
+                                            <div style="flex: 1;">
+
+                                                <input id="" name="coupon" class="form-control"
+                                                    value="<%= cart.isCoupon.couponCode %>" disabled>
+                                            </div>
+                                            <button type="submit" class="btn btn-danger"
+                                                onclick="deletecouponform('<%= cart.isCoupon.couponCode %>')">Remove</button>
+                                        </form>
+                                        <% } %>
+                                            <div id="successMessage" class="text-danger"></div>
+                            </div>
+                            <div class="cart__total" id="pricefield">
+                                <h6>Cart total</h6>
+                                <ul class="checkout__total__all">
+                                    <li>Subtotal <span>Rs <%= total %></span></li>
+                                    <% if(cart.isCoupon){ %>
+                                        <li>Coupon Discount <span>Rs <%= cart.isCoupon.discountAmount %>
+                                            </span></li>
+                                        <% } %>
+                                            <li>Total <span>Rs <%= discountedAmount %></span></li>
+                                </ul>
+                                <a href="/get-Checkout" class="primary-btn">Proceed to checkout</a>
+                            </div>
                         </div>
-                        <div class="cart__total" id="pricefield">
-                            <h6>Cart total</h6>
-                            <ul class="checkout__total__all">
-                                <li>Subtotal <span>Rs <%= total %></span></li>
-                                <% if(cart.isCoupon){ %>
-                                    <li>Coupon Discount <span>Rs <%= cart.isCoupon.discountAmount %>
-                                        </span></li>
-                                    <% } %>
-                                        <li>Total <span>Rs <%= discountedAmount %></span></li>
-                            </ul>
-                            <a href="/get-Checkout" class="primary-btn">Proceed to checkout</a>
-                        </div>
-                    </div>
-                    <% } else { %>
-                        <div style="height: 250px;">
-                            <h4>Hey, it feels so light!</h4>
-                            <p>There is nothing in your bag.Let's add some items.</p>
-                            <a class="btn text-white" style="background-color: rgb(201, 20, 89);" href="/shop">SHOP</a>
-                        </div>
-                        <% } %>
-                        <% }else { %>
+                        <% } else { %>
                             <div style="height: 250px;">
                                 <h4>Hey, it feels so light!</h4>
                                 <p>There is nothing in your bag.Let's add some items.</p>
-                                <a class="btn text-white" style="background-color: rgb(201, 20, 89);" href="/shop">SHOP</a>
+                                <a class="btn text-white" style="background-color: rgb(201, 20, 89);"
+                                    href="/shop">SHOP</a>
                             </div>
                             <% } %>
-
+                                <% }else { %>
+                                    <div style="height: 250px;">
+                                        <h4>Hey, it feels so light!</h4>
+                                        <p>There is nothing in your bag.Let's add some items.</p>
+                                        <a class="btn text-white" style="background-color: rgb(201, 20, 89);"
+                                            href="/shop">SHOP</a>
+                                    </div>
+                                    <% } %>
             </div>
         </div>
     </section>
 
     <%- include('../layouts/user/footer.ejs'); -%>
-    <script>
-         
-            document.getElementById('applyCouponButton').addEventListener('click',(e)=>{
+        <script>
+
+            document.getElementById('applyCouponButton').addEventListener('click', (e) => {
                 e.preventDefault();
                 let couponcode = document.getElementById('couponCode').value;
                 let data = { coupon: couponcode }
@@ -172,12 +183,12 @@
                     method: 'POST',
                     url: '/applyCoupon',
                     data: data,
-                    
+
                     success: function (response) {
                         if (response.couponapplied) {
                             document.getElementById('couponCode').value = response.code;
                             $('#cartpage').load('/cart #cartpage');
-                        } else if(response.maxamount){
+                        } else if (response.maxamount) {
                             const successMessage = $('<div>').addClass('success-message').text('Total Amount is less');
                             $('#successMessage').empty().append(successMessage);
                         } else if (response.invalid) {
@@ -192,8 +203,6 @@
                         }
                     }
                 })
-            
-
             })
 
             function deletecouponform(code) {
@@ -214,5 +223,5 @@
                     }
                 })
             }
-               
-    </script>
+
+        </script>
