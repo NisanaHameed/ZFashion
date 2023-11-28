@@ -3,7 +3,8 @@ function addtoCart(productId) {
     const selectedSize = document.querySelector('input[name="size"]:checked');
 
     if (!selectedSize) {
-        document.getElementById('selectsizeerror').innerText = "Select a size"
+        // document.getElementById('selectsizeerror').innerText = "Select a size"
+        swal("select size")
         return;
     }
 
