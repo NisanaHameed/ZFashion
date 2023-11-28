@@ -237,7 +237,7 @@ const getProfile = async (req, res) => {
         const userid = req.session.userId;
         const user = await User.findById(userid);
         console.log(user)
-        res.render('profile', { user, username });
+        res.render('Profile', { user, username });
     } catch (error) {
         console.log(error);
     }
