@@ -7,11 +7,12 @@
           Add Category
         </button>
         <div class="dropdown-menu p-4 py-4">
-          <form action="/admin/add-category" method="post" style="width: 15rem;">
+          <form id="addcategoryform" method="post" style="width: 15rem;" onsubmit="validateAddCategoryForm()">
             <div class="form-group">
               <label for="categoryName">Category Name</label>
               <input type="text" class="form-control mt-2" id="categoryName" name="category"
                 placeholder="Enter category name">
+                <p class="text-danger" id="error1"></p>
             </div>
             <div class="d-flex justify-content-center">
               <button type="submit" class="btn btn-primary">ADD</button>
@@ -88,6 +89,47 @@
   <%- include('../layouts/admin/footer.ejs') -%>
 
     <script>
+      function validateAddCategoryForm() {
+    event.preventDefault();
+
+    const category = document.getElementById('categoryName').value.trim();
+    const letterPattern = /^[a-zA-Z]+$/
+    const maxCharacters = 15;
+    document.getElementById('error1').innerText = "";
+    let valid = true;
+
+    if (!letterPattern.test(category) || category == "") {
+        document.getElementById('error1').innerText = "Enter a valid category name";
+        valid = false;
+    }else if (category.length > maxCharacters) {
+        document.getElementById('error1').innerText = `Category name must be at most ${maxCharacters} characters long`;
+        valid = false;
+    }
+
+    if (valid) {
+        addCategory();
+    }
+}
+      function addCategory(){
+        const category = document.getElementById('categoryName').value
+        $.ajax({
+            method:'POST',
+            url:'/admin/add-category',
+            data:{category},
+            success:function(response){
+              if(response.success){
+                swal("Category added!")
+                $('#reloadarea').load('/admin/category #reloadarea');
+              }else if(response.exist){
+                swal("Category already exists!")
+              }
+            },
+            error:function(err){
+              console.log(err);
+            }
+          })
+      }
+
       function showUpdateCategoryForm(categoryId, categoryName) {
         const modal = document.getElementById('myModal');
         const updatedCategoryNameInput = document.getElementById('updatedCategoryName');
@@ -111,16 +153,19 @@
         e.preventDefault();
 
         let name = document.getElementById('updatedCategoryName').value.trim();
-        const numberPattern = /\d/;
+        const letterPattern = /^[a-zA-Z]+$/
+        const maxCharacters = 15;
         document.getElementById('error').innerText = "";
         let valid = true;
-        if (numberPattern.test(name) || name == "") {
+        if (!letterPattern.test(name) || name == "") {
           document.getElementById('error').innerText = "Enter a valid category name";
           valid = false;
+        }else if (name.length > maxCharacters) {
+        document.getElementById('error').innerText = `Category name must be at most ${maxCharacters} characters long`;
+        valid = false;
         }
         if (valid == true) {
           editCategory();
-          this.action = `/admin/update-category/${categoryId}`;
         }
       });
       function editCategory() {

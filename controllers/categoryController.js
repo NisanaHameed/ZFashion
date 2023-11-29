@@ -16,13 +16,15 @@ const loadCategory = async (req, res) => {
 const addCategory = async (req, res) => {
 
     try {
+        console.log("Category addition")
         const cname = req.body.category;
         let cat = await Category.findOne({ name: cname });
         if (!cat) {
             await Category.create({ name: cname });
+            res.json({success:true});
+        }else{
+            res.json({exist:true});
         }
-
-        res.redirect('/admin/category');
 
     } catch (error) {
         console.log(error);
