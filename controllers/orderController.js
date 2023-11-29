@@ -18,6 +18,9 @@ const getCheckOut = async (req, res) => {
         let username = req.session.username;
         const user = req.session.userId;
         const cart = await User.findOne({ _id: user }).populate({ path: 'Products.ProductId', populate: { path: 'Offer' } }).populate('isCoupon');
+        if(!cart.Products.length){
+            res.redirect('/cart');
+        }
         const address = await Address.findOne({ UserId: user });
         let total = 0;
         let subtotal = 0;
