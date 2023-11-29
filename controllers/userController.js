@@ -99,9 +99,7 @@ const verifyotp = async (req, res) => {
         } else {
             res.send('incorrect otp');
         }
-
     } catch (err) {
-
         res.send(err);
         console.log(err)
     }
@@ -117,7 +115,6 @@ const home = async (req, res) => {
     } catch (error) {
         console.log(error);
     }
-
 }
 
 const loadLogin = function (req, res) {
