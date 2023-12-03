@@ -18,10 +18,13 @@ const walletController = require('../controllers/walletController');
 router.get('/signup',userController.loadSignup);
 router.post('/registerUser',userController.sentotp);
 
-router.post('/verifyotp',userController.verifyotp)
+router.post('/verifyotp',userController.verifyotp);
+router.get('/resendOTP',userController.resendOTP);
 
 router.get('/login',userController.loadLogin);
 router.post('/LoginUser',userController.login);
+router.get('/getforgotPassword',userController.getforgotPassword);
+router.post('/forgotPassword',userController.forgotPassword);
 
 router.get('/',userController.home);
 router.get('/shop',userController.loadShop);

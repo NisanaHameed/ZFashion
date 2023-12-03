@@ -43,7 +43,6 @@ const sentotp = async (req, res) => {
         password: await bcrypt.hash(req.body.password, 10),
         referralCode: generateUniqueID()
     }
-    console.log('referralcode' + referralcode)
     const email = req.body.email;
     const check = await User.findOne({ email: email });
     if (check) {
@@ -71,7 +70,7 @@ const sentotp = async (req, res) => {
         });
         setTimeout(() => {
             generatedOTP = randomstring.generate(6)
-        }, 300000);
+        }, 120000);
     }
 
 }
@@ -102,6 +101,35 @@ const verifyotp = async (req, res) => {
     } catch (err) {
         res.send(err);
         console.log(err)
+    }
+}
+
+const resendOTP = async (req,res)=>{
+    try{
+        generatedOTP = randomstring.generate(6);
+        console.log('OTP  ' + generatedOTP)
+        const mailOptions = {
+            from: 'nisana1994@gmail.com',
+            to: userdata.email,
+            subject: 'Your OTP for Email Verification',
+            text: `Your OTP for email verification is'${generatedOTP}`
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error(error);
+                res.status(500).send('Failed to send otp');
+
+            } else {
+                console.log('OTP sent');
+                res.render('otpverify');
+            }
+        });
+        setTimeout(() => {
+            generatedOTP = randomstring.generate(6)
+        }, 120000);
+    }catch(err){
+        console.log(err);
     }
 }
 
@@ -149,6 +177,32 @@ const login = async (req, res) => {
     catch (err) {
         res.send(err)
         console.log(err)
+    }
+}
+
+const getforgotPassword = (req,res)=>{
+    try{
+        res.render('forgotPassword');
+    }catch(err){
+        console.log(err);
+    }
+}
+
+const forgotPassword = async (req,res)=>{
+    try{
+        let email = req.body.email;
+        let password = req.body.password;
+        console.log(password);
+        const checkemail = await User.findOne({email:email});
+        if(!checkemail){
+            res.json({nouser:true});
+        }else{
+            let hashedPassword = await bcrypt.hash(password, 10);
+            await User.updateOne({email:email},{password:hashedPassword});
+            res.json({success:true});
+        } 
+    }catch(err){
+        console.log(err);
     }
 }
 
@@ -349,8 +403,11 @@ module.exports = {
     loadSignup,
     sentotp,
     verifyotp,
+    resendOTP,
     loadLogin,
     login,
+    getforgotPassword,
+    forgotPassword,
     home,
     loadShop,
     loadProductdDetail,

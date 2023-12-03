@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OTP Verification</title>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -72,7 +73,8 @@
       </div>
 
     </form>
-    <div class="timer" id="timer"><span id="time">05:00</span></div>
+    <div class="timer" id="timer"><span id="time">02:00</span></div>
+    <a id="resend" class="btn-submit text-center" onclick="resendOTP()" style="display: none;">Resend OTP</a>
   </div>
 
   <script>
@@ -92,11 +94,51 @@
         seconds = 59;
       } else {
         clearInterval(timerInterval);
+        document.getElementById('resend').style.display = 'block';
+        timeElement.style.display = "none"
       }
 
       timeElement.textContent = `${minutes}:${seconds}`;
     }, 1000);
+
+    function resendOTP() {
+      $.ajax({
+        method: 'GET',
+        url: '/resendOTP',
+        success: function (response) {
+          document.getElementById('resend').style.display = 'none';
+          document.getElementById('time').style.display = 'block';
+          document.getElementById('time').textContent = '02:00';
+          let timerInterval = setInterval(function () {
+            let timeElement = document.getElementById('time');
+            let time = timeElement.textContent.split(':');
+            let minutes = parseInt(time[0], 10);
+            let seconds = parseInt(time[1], 10);
+
+            if (seconds > 0) {
+              seconds--;
+              if (seconds < 10) {
+                seconds = '0' + seconds;
+              }
+            } else if (minutes > 0) {
+              minutes--;
+              seconds = 59;
+            } else {
+              clearInterval(timerInterval);
+              document.getElementById('resend').style.display = 'block';
+              timeElement.style.display = "none"
+            }
+
+            timeElement.textContent = `${minutes}:${seconds}`;
+          }, 1000);
+        },
+        error: function (err) {
+          console.log(err);
+        }
+      })
+    } 
   </script>
 </body>
+
 
 </html>

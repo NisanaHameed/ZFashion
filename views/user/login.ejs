@@ -20,12 +20,13 @@
    
     <label class="form-label">Email</label>
     <input type="email" class="form-control" name="email" required aria-describedby="emailHelp"
-      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
+    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}">
 
     <label class="form-label mt-4">Password</label>
     <input type="password" class="form-control" name="password">
     
     <p class="mt-2">New User? <a href="/signup" >Sign up</a></p>
+    <p class="mt-2"><a href="/getforgotPassword">Forgot Password?</a></p>
     <div class="d-grid gap-2 col-6 mx-auto">
       <% if(error) { %> 
       <p class="text-danger"><%= error %></p>
