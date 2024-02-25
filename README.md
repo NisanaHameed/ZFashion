@@ -34,3 +34,4 @@ Welcome to ZFashion! This website is your one-stop destination for all your fash
    ```bash
    git clone https://github.com/NisanaHashim/ZFashion.git
    cd ZFashion
+   npm install
